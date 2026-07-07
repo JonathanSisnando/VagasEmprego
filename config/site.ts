@@ -3,7 +3,7 @@ export const siteConfig = {
 
     descricao: "Central independente de divulgação de oportunidades de emprego em Manaus.",
     
-    url: "http://localhost:3000",
+    url: "https://vagasempregomanaus.com.br",
     
     whatsapp: "+5592982362217",
     email: "jonathansisnando@gmail.com",
