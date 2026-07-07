@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { vagas } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagasSineSection } from "./VagasSineSection";
 import { VagasFonteExternaSection } from "./VagasFonteExternaSection";
 import { CurriculoCta } from "./CurriculoCta";
+import { normalizar, filtrarPorTipo } from "../lib/vaga-utils";
 
 type DestaqueSine = {
   id: string;
@@ -279,9 +281,7 @@ export function VagasClient() {
                 </label>
 
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                    🔎
-                  </span>
+                    <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
 
                   <input
                     id="busca"
@@ -418,50 +418,3 @@ export function VagasClient() {
   );
 }
 
-function filtrarPorTipo(vaga: (typeof vagas)[number], filtro: string) {
-  const escolaridade = normalizar(vaga.escolaridade);
-  const experiencia = normalizar(vaga.experiencia);
-  const categoria = normalizar(vaga.categoria);
-  const titulo = normalizar(vaga.titulo);
-  const requisitos = normalizar(vaga.requisitos.join(" "));
-
-  if (filtro === "Todas") {
-    return true;
-  }
-
-  if (filtro === "Sem experiência") {
-    return (
-      experiencia.includes("sem experiencia") ||
-      experiencia.includes("nao e necessario") ||
-      experiencia.includes("nao necessita") ||
-      experiencia.includes("nao exige") ||
-      requisitos.includes("sem experiencia") ||
-      requisitos.includes("nao e necessario") ||
-      requisitos.includes("nao necessita") ||
-      requisitos.includes("nao exige")
-    );
-  }
-
-  if (filtro === "Ensino médio") {
-    return escolaridade.includes("ensino medio");
-  }
-
-  if (filtro === "Ensino fundamental") {
-    return escolaridade.includes("ensino fundamental");
-  }
-
-  if (filtro === "PCD") {
-    return vaga.pcd === true;
-  }
-
-  return (
-    categoria.includes(normalizar(filtro)) || titulo.includes(normalizar(filtro))
-  );
-}
-
-function normalizar(texto: string) {
-  return texto
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}

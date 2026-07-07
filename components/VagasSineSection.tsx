@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import type { Vaga } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
+import { normalizar, filtrarPorTipo } from "../lib/vaga-utils";
 
 type RespostaSine = {
   fonte: string;
@@ -149,10 +150,12 @@ export function VagasSineSection({
     return;
   }
 
-  setBusca(destaqueSelecionado.titulo);
-  setFiltroSelecionado("Todas");
-  setQuantidadeVisivel(12);
-  setRolarParaCards(true);
+  startTransition(() => {
+    setBusca(destaqueSelecionado.titulo);
+    setFiltroSelecionado("Todas");
+    setQuantidadeVisivel(12);
+    setRolarParaCards(true);
+  });
 }, [destaqueSelecionado]);
 
 useEffect(() => {
@@ -496,100 +499,7 @@ useEffect(() => {
   );
 }
 
-function filtrarPorTipo(vaga: Vaga, filtro: string) {
-  const escolaridade = normalizar(vaga.escolaridade);
-  const experiencia = normalizar(vaga.experiencia);
-  const categoria = normalizar(vaga.categoria);
-  const titulo = normalizar(vaga.titulo);
-  const requisitos = normalizar(vaga.requisitos.join(" "));
 
-  if (filtro === "Todas") {
-    return true;
-  }
-
-  if (filtro === "Sem experiência" || filtro === "Não é necessário") {
-    return (
-      experiencia.includes("sem experiencia") ||
-      experiencia.includes("nao e necessario") ||
-      experiencia.includes("nao necessario") ||
-      experiencia.includes("nao necessita") ||
-      experiencia.includes("nao exige") ||
-      experiencia.includes("sem necessidade de experiencia") ||
-      requisitos.includes("sem experiencia") ||
-      requisitos.includes("nao e necessario") ||
-      requisitos.includes("nao necessario") ||
-      requisitos.includes("nao necessita") ||
-      requisitos.includes("nao exige")
-    );
-  }
-
-  if (filtro === "Ensino médio") {
-    return escolaridade.includes("ensino medio");
-  }
-
-  if (filtro === "Ensino fundamental") {
-    return escolaridade.includes("ensino fundamental");
-  }
-
-  if (filtro === "PCD") {
-    return vaga.pcd === true;
-  }
-
-  if (filtro === "Administrativo") {
-    return (
-      categoria.includes("administrativo") || titulo.includes("administrativo")
-    );
-  }
-
-  if (filtro === "Produção") {
-    return categoria.includes("producao") || titulo.includes("producao");
-  }
-
-  if (filtro === "Atendimento") {
-    return (
-      categoria.includes("atendimento") ||
-      titulo.includes("atendente") ||
-      titulo.includes("recepcionista")
-    );
-  }
-
-  if (filtro === "Logística") {
-    return (
-      categoria.includes("logistica") ||
-      titulo.includes("logistico") ||
-      titulo.includes("estoque") ||
-      titulo.includes("almoxarife") ||
-      titulo.includes("conferente")
-    );
-  }
-
-  if (filtro === "Comércio") {
-    return (
-      categoria.includes("comercio") ||
-      titulo.includes("vendedor") ||
-      titulo.includes("loja") ||
-      titulo.includes("caixa")
-    );
-  }
-
-  if (filtro === "Serviços gerais") {
-    return (
-      categoria.includes("servicos gerais") ||
-      categoria.includes("servicos") ||
-      titulo.includes("limpeza") ||
-      titulo.includes("servicos gerais")
-    );
-  }
-
-  return true;
-}
-
-function normalizar(texto: string) {
-  return texto
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
 
 function formatarData(data: string) {
   const dataObj = new Date(`${data}T00:00:00`);

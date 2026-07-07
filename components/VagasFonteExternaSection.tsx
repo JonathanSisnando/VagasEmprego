@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Vaga } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
+import { normalizar, filtrarPorTipo } from "../lib/vaga-utils";
 
 type RespostaFonteExterna = {
   fonte: string;
@@ -341,52 +342,4 @@ export function VagasFonteExternaSection({
   );
 }
 
-function filtrarPorTipo(vaga: Vaga, filtro: string) {
-  const escolaridade = normalizar(vaga.escolaridade);
-  const experiencia = normalizar(vaga.experiencia);
-  const categoria = normalizar(vaga.categoria);
-  const titulo = normalizar(vaga.titulo);
-  const requisitos = normalizar(vaga.requisitos.join(" "));
 
-  if (filtro === "Todas") {
-    return true;
-  }
-
-  if (filtro === "Sem experiência") {
-    return (
-      experiencia.includes("sem experiencia") ||
-      experiencia.includes("nao e necessario") ||
-      experiencia.includes("nao necessario") ||
-      experiencia.includes("nao necessita") ||
-      experiencia.includes("nao exige") ||
-      requisitos.includes("sem experiencia") ||
-      requisitos.includes("nao e necessario") ||
-      requisitos.includes("nao necessario") ||
-      requisitos.includes("nao necessita") ||
-      requisitos.includes("nao exige")
-    );
-  }
-
-  if (filtro === "Ensino médio") {
-    return escolaridade.includes("ensino medio");
-  }
-
-  if (filtro === "Ensino fundamental") {
-    return escolaridade.includes("ensino fundamental");
-  }
-
-  if (filtro === "PCD") {
-    return vaga.pcd === true;
-  }
-
-  return (
-    categoria === normalizar(filtro) || titulo.includes(normalizar(filtro))
-  );
-}
-
-function normalizar(texto: string) {
-  return texto
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase();
-}

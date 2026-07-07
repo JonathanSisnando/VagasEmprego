@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { vagas } from "../../../data/vagas";
 import { CurriculoCta } from "../../../components/CurriculoCta";
+import { normalizar } from "../../../lib/vaga-utils";
 import {
   buscarNoticiaSineMaisRecente,
   extrairVagasDoPost,
@@ -542,9 +543,3 @@ async function buscarVagaPorSlug(slug: string) {
   return vagasSetemp.find((vaga) => vaga.slug === slug) ?? null;
 }
 
-function normalizar(texto: string) {
-  return texto
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}

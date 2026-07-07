@@ -43,6 +43,103 @@ export function gerarSlug(texto: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+export function normalizar(texto: string) {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+export function filtrarPorTipo(vaga: Vaga, filtro: string) {
+  const escolaridade = normalizar(vaga.escolaridade);
+  const experiencia = normalizar(vaga.experiencia);
+  const categoria = normalizar(vaga.categoria);
+  const titulo = normalizar(vaga.titulo);
+  const requisitos = normalizar(vaga.requisitos.join(" "));
+
+  if (filtro === "Todas") {
+    return true;
+  }
+
+  if (filtro === "Sem experiência" || filtro === "Não é necessário") {
+    return (
+      experiencia.includes("sem experiencia") ||
+      experiencia.includes("nao e necessario") ||
+      experiencia.includes("nao necessario") ||
+      experiencia.includes("nao necessita") ||
+      experiencia.includes("nao exige") ||
+      experiencia.includes("sem necessidade de experiencia") ||
+      requisitos.includes("sem experiencia") ||
+      requisitos.includes("nao e necessario") ||
+      requisitos.includes("nao necessario") ||
+      requisitos.includes("nao necessita") ||
+      requisitos.includes("nao exige")
+    );
+  }
+
+  if (filtro === "Ensino médio") {
+    return escolaridade.includes("ensino medio");
+  }
+
+  if (filtro === "Ensino fundamental") {
+    return escolaridade.includes("ensino fundamental");
+  }
+
+  if (filtro === "PCD") {
+    return vaga.pcd === true;
+  }
+
+  if (filtro === "Administrativo") {
+    return (
+      categoria.includes("administrativo") || titulo.includes("administrativo")
+    );
+  }
+
+  if (filtro === "Produção") {
+    return categoria.includes("producao") || titulo.includes("producao");
+  }
+
+  if (filtro === "Atendimento") {
+    return (
+      categoria.includes("atendimento") ||
+      titulo.includes("atendente") ||
+      titulo.includes("recepcionista")
+    );
+  }
+
+  if (filtro === "Logística") {
+    return (
+      categoria.includes("logistica") ||
+      titulo.includes("logistico") ||
+      titulo.includes("estoque") ||
+      titulo.includes("almoxarife") ||
+      titulo.includes("conferente")
+    );
+  }
+
+  if (filtro === "Comércio") {
+    return (
+      categoria.includes("comercio") ||
+      titulo.includes("vendedor") ||
+      titulo.includes("loja") ||
+      titulo.includes("caixa")
+    );
+  }
+
+  if (filtro === "Serviços gerais") {
+    return (
+      categoria.includes("servicos gerais") ||
+      categoria.includes("servicos") ||
+      titulo.includes("limpeza") ||
+      titulo.includes("servicos gerais")
+    );
+  }
+
+  return (
+    categoria.includes(normalizar(filtro)) || titulo.includes(normalizar(filtro))
+  );
+}
+
 export function limparTexto(texto: string) {
   return texto
     .replace(/\s+/g, " ")

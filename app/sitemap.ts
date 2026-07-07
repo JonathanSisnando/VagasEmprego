@@ -5,7 +5,7 @@ import { siteConfig } from "../config/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const dataAtual = new Date();
 
-  const paginasEstaticas: MetadataRoute.Sitemap = [
+  return [
     {
       url: `${siteConfig.url}`,
       lastModified: dataAtual,
@@ -42,14 +42,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.4,
     },
+    {
+      url: `${siteConfig.url}/adaptar-curriculo`,
+      lastModified: dataAtual,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    ...vagas.map((vaga) => ({
+      url: `${siteConfig.url}/vagas/${vaga.slug}`,
+      lastModified: new Date(vaga.dataPublicacao),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    })),
   ];
-
-  const paginasDasVagas: MetadataRoute.Sitemap = vagas.map((vaga) => ({
-    url: `${siteConfig.url}/vagas/${vaga.slug}`,
-    lastModified: new Date(vaga.dataPublicacao),
-    changeFrequency: "daily",
-    priority: 0.8,
-  }));
-
-  return [...paginasEstaticas, ...paginasDasVagas];
 }

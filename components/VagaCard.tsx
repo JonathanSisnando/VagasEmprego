@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CalendarDays, GraduationCap, MapPin, Timer } from "lucide-react";
 import type { Vaga } from "../data/vagas";
+import { normalizar } from "../lib/vaga-utils";
 
 type VagaCardProps = {
   vaga: Vaga;
@@ -155,9 +156,3 @@ export function VagaCard({ vaga }: VagaCardProps) {
   );
 }
 
-function normalizar(texto: string) {
-  return texto
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
