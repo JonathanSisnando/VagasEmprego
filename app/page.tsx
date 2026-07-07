@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { vagas } from "../data/vagas";
 import { VagaCard } from "../components/VagaCard";
+import { CurriculoCta } from "../components/CurriculoCta";
+import { ResumoVagasSineHome } from "../components/ResumoVagasSineHome";
 
 export default function HomePage() {
   const ultimasVagas = vagas.slice(0, 3);
@@ -115,22 +117,31 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <CurriculoCta />
+      </section>
+
       <section className="mx-auto max-w-6xl px-4 py-12">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-              Últimas oportunidades
-            </p>
+        <ResumoVagasSineHome />
+      </section>
 
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">
-              Vagas em destaque
-            </h2>
+      <section className="mx-auto max-w-6xl px-4 pb-12">
+        <div className="rounded-3xl border border-blue-100 bg-blue-50 p-6">
+          <p className="text-sm font-black uppercase tracking-wide text-blue-700">
+            Vagas cadastradas
+          </p>
 
-            <p className="mt-3 max-w-2xl text-slate-600">
-              Veja algumas das vagas mais recentes cadastradas na plataforma.
-            </p>
-          </div>
+          <h2 className="mt-2 text-2xl font-black text-slate-950">
+            Oportunidades cadastradas no sistema
+          </h2>
 
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
+            Estas vagas foram cadastradas manualmente na plataforma — não vêm
+            do Sine Manaus. Veja algumas das mais recentes abaixo.
+          </p>
+        </div>
+
+        <div className="mt-6 flex justify-end">
           <Link
             href="/vagas"
             className="inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
@@ -139,7 +150,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {ultimasVagas.map((vaga) => (
             <VagaCard key={vaga.id} vaga={vaga} />
           ))}

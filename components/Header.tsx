@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { Briefcase } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
   const [menuAberto, setMenuAberto] = useState(false);
 
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-lg font-bold text-slate-900">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900">
+            <Briefcase className="size-5 text-blue-700" aria-hidden="true" />
             Vagas Manaus Hoje
           </Link>
 

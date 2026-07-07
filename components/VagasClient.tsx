@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { vagas } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagasSineSection } from "./VagasSineSection";
+import { VagasFonteExternaSection } from "./VagasFonteExternaSection";
+import { CurriculoCta } from "./CurriculoCta";
 
 type DestaqueSine = {
   id: string;
@@ -33,8 +35,11 @@ const filtrosRapidos = [
   "PCD",
 ];
 
+const TODOS_BAIRROS = "Todos os bairros";
+
 export function VagasClient() {
   const [filtroSelecionado, setFiltroSelecionado] = useState("Todas");
+  const [bairroSelecionado, setBairroSelecionado] = useState(TODOS_BAIRROS);
   const [busca, setBusca] = useState("");
 
   const [resumoSine, setResumoSine] = useState<ResumoSine>({
@@ -60,11 +65,22 @@ export function VagasClient() {
     return [...filtrosRapidos, ...categoriasSemRepeticao];
   }, [categorias]);
 
+  const bairros = useMemo(() => {
+    const bairrosInformados = vagas
+      .map((vaga) => vaga.bairro)
+      .filter((bairro) => bairro && normalizar(bairro) !== "nao informado");
+
+    return [TODOS_BAIRROS, ...Array.from(new Set(bairrosInformados)).sort()];
+  }, []);
+
   const vagasFiltradas = useMemo(() => {
     const termoBusca = normalizar(busca.trim());
 
     return vagas.filter((vaga) => {
       const correspondeFiltro = filtrarPorTipo(vaga, filtroSelecionado);
+
+      const correspondeBairro =
+        bairroSelecionado === TODOS_BAIRROS || vaga.bairro === bairroSelecionado;
 
       const textoDaVaga = normalizar(`
         ${vaga.titulo}
@@ -86,15 +102,18 @@ export function VagasClient() {
       const correspondeBusca =
         termoBusca === "" || textoDaVaga.includes(termoBusca);
 
-      return correspondeFiltro && correspondeBusca;
+      return correspondeFiltro && correspondeBairro && correspondeBusca;
     });
-  }, [busca, filtroSelecionado]);
+  }, [busca, filtroSelecionado, bairroSelecionado]);
 
   const filtrosAtivos =
-    filtroSelecionado !== "Todas" || busca.trim().length > 0;
+    filtroSelecionado !== "Todas" ||
+    bairroSelecionado !== TODOS_BAIRROS ||
+    busca.trim().length > 0;
 
   function limparFiltros() {
     setFiltroSelecionado("Todas");
+    setBairroSelecionado(TODOS_BAIRROS);
     setBusca("");
   }
 
@@ -116,6 +135,10 @@ export function VagasClient() {
             presencialmente ao atendimento.
           </p>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-8">
+        <CurriculoCta />
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-8">
@@ -217,6 +240,16 @@ export function VagasClient() {
           destaqueSelecionado={destaqueSelecionado}
         />
 
+        <VagasFonteExternaSection
+          apiEndpoint="/api/vagas-setemp"
+          idPrefix="setemp"
+          eyebrow="SETEMP"
+          titulo="Vagas do Portal do Trabalhador (SETEMP)"
+          descricao="Oportunidades do governo do Amazonas para Manaus, via Portal do Trabalhador. A candidatura é feita diretamente no site da vaga."
+          linkFonteLabel="Ver Portal do Trabalhador"
+          linkFonteHref="https://www.portaldotrabalhador.am.gov.br/jobs"
+        />
+
         <section className="mt-14 border-t border-slate-200 pt-10">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -282,6 +315,33 @@ export function VagasClient() {
                         }`}
                       >
                         {filtro}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-3 text-sm font-bold text-slate-900">
+                  Filtrar por bairro
+                </p>
+
+                <div className="flex flex-wrap gap-3">
+                  {bairros.map((bairro) => {
+                    const estaSelecionado = bairroSelecionado === bairro;
+
+                    return (
+                      <button
+                        key={bairro}
+                        type="button"
+                        onClick={() => setBairroSelecionado(bairro)}
+                        className={`rounded-full border px-5 py-3 text-sm font-bold transition ${
+                          estaSelecionado
+                            ? "border-blue-700 bg-blue-700 text-white shadow-sm"
+                            : "border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                        }`}
+                      >
+                        {bairro}
                       </button>
                     );
                   })}

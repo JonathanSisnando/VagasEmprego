@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CalendarDays, GraduationCap, MapPin, Timer } from "lucide-react";
 import type { Vaga } from "../data/vagas";
 
 type VagaCardProps = {
@@ -9,6 +10,10 @@ export function VagaCard({ vaga }: VagaCardProps) {
   const ehVagaSine =
     String(vaga.id).startsWith("sine-") ||
     normalizar(vaga.fonte).includes("sine manaus");
+
+  const ehVagaSetemp =
+    String(vaga.id).startsWith("setemp-") ||
+    normalizar(vaga.fonte).includes("setemp");
 
   const bairroInformado =
     vaga.bairro && normalizar(vaga.bairro) !== "nao informado";
@@ -29,6 +34,12 @@ export function VagaCard({ vaga }: VagaCardProps) {
         {ehVagaSine && (
           <span className="rounded-full bg-blue-700 px-3 py-1 text-xs font-black text-white">
             Sine Manaus
+          </span>
+        )}
+
+        {ehVagaSetemp && (
+          <span className="rounded-full bg-blue-700 px-3 py-1 text-xs font-black text-white">
+            SETEMP
           </span>
         )}
 
@@ -65,7 +76,11 @@ export function VagaCard({ vaga }: VagaCardProps) {
         </h2>
 
         <p className="mt-2 text-sm font-medium text-slate-500">
-          {ehVagaSine ? "Prefeitura de Manaus - Sine Manaus" : vaga.empresa}
+          {ehVagaSine
+            ? "Prefeitura de Manaus - Sine Manaus"
+            : ehVagaSetemp
+              ? "SETEMP / Portal do Trabalhador"
+              : vaga.empresa}
         </p>
 
         {ehVagaSine && (
@@ -76,26 +91,36 @@ export function VagaCard({ vaga }: VagaCardProps) {
           </div>
         )}
 
-        <div className="mt-5 space-y-3 text-sm text-slate-700">
-          <p>
-            <span className="font-bold text-slate-900">Local:</span>{" "}
-            {vaga.cidade}/{vaga.estado}
-            {bairroInformado ? ` — ${vaga.bairro}` : ""}
+        {ehVagaSetemp && (
+          <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+            <p className="text-sm font-bold text-blue-900">
+              Cadastro: on-line pelo Portal do Trabalhador
+            </p>
+          </div>
+        )}
+
+        <div className="mt-5 space-y-2.5 text-sm text-slate-700">
+          <p className="flex items-start gap-2">
+            <MapPin className="mt-0.5 size-4 shrink-0 text-slate-400" aria-hidden="true" />
+            <span>
+              {vaga.cidade}/{vaga.estado}
+              {bairroInformado ? ` — ${vaga.bairro}` : ""}
+            </span>
           </p>
 
-          <p>
-            <span className="font-bold text-slate-900">Escolaridade:</span>{" "}
-            {vaga.escolaridade}
+          <p className="flex items-start gap-2">
+            <GraduationCap className="mt-0.5 size-4 shrink-0 text-slate-400" aria-hidden="true" />
+            <span>{vaga.escolaridade}</span>
           </p>
 
-          <p>
-            <span className="font-bold text-slate-900">Experiência:</span>{" "}
-            {vaga.experiencia}
+          <p className="flex items-start gap-2">
+            <Timer className="mt-0.5 size-4 shrink-0 text-slate-400" aria-hidden="true" />
+            <span>{vaga.experiencia}</span>
           </p>
 
-          <p>
-            <span className="font-bold text-slate-900">Publicado em:</span>{" "}
-            {vaga.dataPublicacao}
+          <p className="flex items-start gap-2">
+            <CalendarDays className="mt-0.5 size-4 shrink-0 text-slate-400" aria-hidden="true" />
+            <span>Publicado em {vaga.dataPublicacao}</span>
           </p>
         </div>
 

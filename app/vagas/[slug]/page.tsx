@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  BadgeCheck,
+  Banknote,
+  CalendarCheck,
+  CalendarDays,
+  GraduationCap,
+  Hash,
+  MapPin,
+  Timer,
+  type LucideIcon,
+} from "lucide-react";
 import { vagas } from "../../../data/vagas";
+import { CurriculoCta } from "../../../components/CurriculoCta";
 import {
   buscarNoticiaSineMaisRecente,
   extrairVagasDoPost,
 } from "../../../lib/sine-manaus";
+import { buscarVagasSetemp } from "../../../lib/setemp";
 
 type VagaDetalhePageProps = {
   params: Promise<{
@@ -45,6 +58,10 @@ export default async function VagaDetalhePage({
   const ehVagaSine =
     String(vaga.id).startsWith("sine-") ||
     normalizar(vaga.fonte).includes("sine manaus");
+
+  const ehVagaSetemp =
+    String(vaga.id).startsWith("setemp-") ||
+    normalizar(vaga.fonte).includes("setemp");
 
   const bairroInformado =
     vaga.bairro && normalizar(vaga.bairro) !== "nao informado";
@@ -103,7 +120,11 @@ export default async function VagaDetalhePage({
     directApply: false,
     hiringOrganization: {
       "@type": "Organization",
-      name: ehVagaSine ? "Prefeitura de Manaus - Sine Manaus" : vaga.empresa,
+      name: ehVagaSine
+        ? "Prefeitura de Manaus - Sine Manaus"
+        : ehVagaSetemp
+          ? "SETEMP / Portal do Trabalhador"
+          : vaga.empresa,
     },
     jobLocation: {
       "@type": "Place",
@@ -139,8 +160,8 @@ export default async function VagaDetalhePage({
         }}
       />
 
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-10">
+      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[1fr_360px]">
+        <div>
           <Link
             href="/vagas"
             className="inline-flex items-center text-sm font-bold text-blue-700 hover:text-blue-800"
@@ -153,6 +174,12 @@ export default async function VagaDetalhePage({
               {ehVagaSine && (
                 <span className="rounded-full bg-blue-700 px-3 py-1 text-xs font-black text-white">
                   Sine Manaus
+                </span>
+              )}
+
+              {ehVagaSetemp && (
+                <span className="rounded-full bg-blue-700 px-3 py-1 text-xs font-black text-white">
+                  SETEMP
                 </span>
               )}
 
@@ -200,14 +227,15 @@ export default async function VagaDetalhePage({
             </h1>
 
             <p className="mt-4 text-lg font-medium text-slate-600">
-              {ehVagaSine ? "Prefeitura de Manaus - Sine Manaus" : vaga.empresa}
+              {ehVagaSine
+                ? "Prefeitura de Manaus - Sine Manaus"
+                : ehVagaSetemp
+                  ? "SETEMP / Portal do Trabalhador"
+                  : vaga.empresa}
             </p>
           </div>
-        </div>
-      </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-6">
+          <div className="mt-10 space-y-6 border-t border-slate-200 pt-10">
           {ehVagaSine && (
             <article className="rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
               <h2 className="text-2xl font-black text-slate-950">
@@ -234,6 +262,31 @@ export default async function VagaDetalhePage({
             </article>
           )}
 
+          {ehVagaSetemp && (
+            <article className="rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
+              <h2 className="text-2xl font-black text-slate-950">
+                Como se candidatar
+              </h2>
+
+              <p className="mt-4 leading-8 text-slate-700">
+                Esta vaga foi divulgada pelo SETEMP, no Portal do Trabalhador
+                do Governo do Amazonas. A candidatura é feita diretamente na
+                página da vaga no portal.
+              </p>
+
+              {temLinkFonte && (
+                <a
+                  href={vaga.linkFonte}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
+                >
+                  Ver vaga no Portal do Trabalhador
+                </a>
+              )}
+            </article>
+          )}
+
           <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-2xl font-black text-slate-950">
               Informações da vaga
@@ -242,6 +295,7 @@ export default async function VagaDetalhePage({
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <InfoCard
                 titulo="Local"
+                icon={MapPin}
                 valor={
                   bairroInformado
                     ? `${vaga.cidade}/${vaga.estado} — ${vaga.bairro}`
@@ -249,23 +303,24 @@ export default async function VagaDetalhePage({
                 }
               />
 
-              <InfoCard titulo="Escolaridade" valor={vaga.escolaridade} />
+              <InfoCard titulo="Escolaridade" icon={GraduationCap} valor={vaga.escolaridade} />
 
-              <InfoCard titulo="Experiência" valor={vaga.experiencia} />
+              <InfoCard titulo="Experiência" icon={Timer} valor={vaga.experiencia} />
 
-              <InfoCard titulo="Salário" valor={vaga.salario} />
+              <InfoCard titulo="Salário" icon={Banknote} valor={vaga.salario} />
 
-              <InfoCard titulo="Publicado em" valor={vaga.dataPublicacao} />
+              <InfoCard titulo="Publicado em" icon={CalendarDays} valor={vaga.dataPublicacao} />
 
-              <InfoCard titulo="Status" valor={vaga.status} />
+              <InfoCard titulo="Status" icon={BadgeCheck} valor={vaga.status} />
 
               {vaga.dataExpiracao && (
-                <InfoCard titulo="Disponível até" valor={vaga.dataExpiracao} />
+                <InfoCard titulo="Disponível até" icon={CalendarCheck} valor={vaga.dataExpiracao} />
               )}
 
               {vaga.quantidadeVagas && (
                 <InfoCard
                   titulo="Quantidade"
+                  icon={Hash}
                   valor={`${vaga.quantidadeVagas} vaga${
                     vaga.quantidadeVagas > 1 ? "s" : ""
                   }`}
@@ -318,10 +373,11 @@ export default async function VagaDetalhePage({
               </ul>
             </article>
           )}
+          </div>
         </div>
 
-        <aside className="space-y-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
+        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-black text-slate-950">
               {ehVagaSine ? "Cadastro presencial" : "Como se candidatar"}
             </h2>
@@ -344,7 +400,18 @@ export default async function VagaDetalhePage({
                 </a>
               )}
 
-              {!ehVagaSine && temWhatsapp && (
+              {ehVagaSetemp && temLinkFonte && (
+                <a
+                  href={vaga.linkFonte}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
+                >
+                  Candidatar-se no Portal do Trabalhador
+                </a>
+              )}
+
+              {!ehVagaSine && !ehVagaSetemp && temWhatsapp && (
                 <a
                   href={linkWhatsapp}
                   target="_blank"
@@ -355,7 +422,7 @@ export default async function VagaDetalhePage({
                 </a>
               )}
 
-              {!ehVagaSine && temEmail && (
+              {!ehVagaSine && !ehVagaSetemp && temEmail && (
                 <a
                   href={`mailto:${vaga.emailCandidatura}`}
                   className="flex w-full items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
@@ -364,7 +431,7 @@ export default async function VagaDetalhePage({
                 </a>
               )}
 
-              {!ehVagaSine && temLinkFonte && (
+              {!ehVagaSine && !ehVagaSetemp && temLinkFonte && (
                 <a
                   href={vaga.linkFonte}
                   target="_blank"
@@ -421,20 +488,33 @@ export default async function VagaDetalhePage({
               )}
             </div>
           </div>
+
+          <CurriculoCta variant="sidebar" vaga={vaga.titulo} fonte={vaga.fonte} />
         </aside>
       </section>
     </main>
   );
 }
 
-function InfoCard({ titulo, valor }: { titulo: string; valor: string }) {
+function InfoCard({
+  titulo,
+  valor,
+  icon: Icon,
+}: {
+  titulo: string;
+  valor: string;
+  icon: LucideIcon;
+}) {
   return (
-    <div className="rounded-2xl bg-slate-50 p-4">
-      <p className="text-xs font-black uppercase tracking-wide text-slate-500">
-        {titulo}
-      </p>
+    <div className="flex gap-3 rounded-2xl bg-slate-50 p-4">
+      <Icon className="mt-0.5 size-4 shrink-0 text-slate-400" aria-hidden="true" />
+      <div>
+        <p className="text-xs font-black uppercase tracking-wide text-slate-500">
+          {titulo}
+        </p>
 
-      <p className="mt-1 font-bold text-slate-900">{valor}</p>
+        <p className="mt-1 font-bold text-slate-900">{valor}</p>
+      </div>
     </div>
   );
 }
@@ -448,13 +528,18 @@ async function buscarVagaPorSlug(slug: string) {
 
   const postSine = await buscarNoticiaSineMaisRecente();
 
-  if (!postSine) {
-    return null;
+  if (postSine) {
+    const vagasSine = extrairVagasDoPost(postSine);
+    const vagaSine = vagasSine.find((vaga) => vaga.slug === slug);
+
+    if (vagaSine) {
+      return vagaSine;
+    }
   }
 
-  const vagasSine = extrairVagasDoPost(postSine);
+  const vagasSetemp = await buscarVagasSetemp();
 
-  return vagasSine.find((vaga) => vaga.slug === slug) ?? null;
+  return vagasSetemp.find((vaga) => vaga.slug === slug) ?? null;
 }
 
 function normalizar(texto: string) {

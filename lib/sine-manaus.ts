@@ -1,4 +1,17 @@
 import type { Vaga } from "../data/vagas";
+import {
+  ajustarSlugsDuplicados,
+  detectarPcdEmTexto,
+  escaparRegex,
+  extrairOrgaoDoTexto,
+  gerarSlug,
+  inferirCategoria,
+  limparHtmlParaTexto,
+  limparTexto,
+  removerVagasDuplicadas,
+} from "./vaga-utils";
+
+export { limparHtmlParaTexto };
 
 export type WordpressPost = {
   id: number;
@@ -97,9 +110,66 @@ export async function buscarNoticiaSineMaisRecente(): Promise<WordpressPost | nu
   return postSine ?? null;
 }
 
+type ContextoFonte = {
+  idPrefixo: string;
+  fonte: string;
+  comoSeCandidatar: string;
+  descricaoOrigem: string;
+};
+
+/**
+ * O parser foi criado pro boletim diário "Sine Manaus oferta X vagas", mas o
+ * mesmo padrão de blocos ("N vaga(s) - Cargo" + Escolaridade/Experiência/
+ * Requisitos/Atividades) pode aparecer em notícias de PSS de outras
+ * secretarias. Essa função identifica o órgão responsável a partir do texto
+ * da notícia, sem depender de uma lista fixa de secretarias.
+ */
+function determinarContextoFonte(
+  textoLimpo: string,
+  post: WordpressPost
+): ContextoFonte {
+  const tituloLimpo = limparHtmlParaTexto(post.title.rendered).toLowerCase();
+  const pareceSerSine =
+    tituloLimpo.includes("sine") || textoLimpo.toLowerCase().includes("sine manaus");
+
+  if (pareceSerSine) {
+    return {
+      idPrefixo: "sine",
+      fonte: "Prefeitura de Manaus - Sine Manaus",
+      comoSeCandidatar:
+        "Os candidatos devem comparecer a um dos postos do Sine Manaus com documentos pessoais, currículo, comprovante de escolaridade e residência.",
+      descricaoOrigem: "pelo Sine Manaus",
+    };
+  }
+
+  const orgao = extrairOrgaoDoTexto(textoLimpo);
+
+  if (orgao) {
+    const nomeComSigla = orgao.sigla
+      ? `${orgao.nomeCompleto} (${orgao.sigla})`
+      : orgao.nomeCompleto;
+
+    return {
+      idPrefixo: "noticia",
+      fonte: `Prefeitura de Manaus - ${nomeComSigla}`,
+      comoSeCandidatar: `Consulte a notícia oficial da Prefeitura de Manaus para saber como se candidatar a esta vaga divulgada pela ${nomeComSigla}.`,
+      descricaoOrigem: `pela ${nomeComSigla}`,
+    };
+  }
+
+  return {
+    idPrefixo: "noticia",
+    fonte: "Prefeitura de Manaus",
+    comoSeCandidatar:
+      "Consulte a notícia oficial da Prefeitura de Manaus para saber como se candidatar a esta vaga.",
+    descricaoOrigem: "pela Prefeitura de Manaus",
+  };
+}
+
 export function extrairVagasDoPost(post: WordpressPost): Vaga[] {
   const textoLimpo = limparHtmlParaTexto(post.content.rendered);
   const blocos = separarBlocosDeVagas(textoLimpo);
+  const contextoFonte = determinarContextoFonte(textoLimpo, post);
 
   const vagasExtraidas = blocos.map((bloco, index) => {
     const dados = extrairDadosDaVaga(bloco);
@@ -108,40 +178,13 @@ export function extrairVagasDoPost(post: WordpressPost): Vaga[] {
       dados,
       post,
       index,
+      contextoFonte,
     });
   });
 
-  const vagasSemDuplicidade = removerDuplicadas(vagasExtraidas);
+  const vagasSemDuplicidade = removerVagasDuplicadas(vagasExtraidas);
 
   return ajustarSlugsDuplicados(vagasSemDuplicidade);
-}
-
-export function limparHtmlParaTexto(html: string) {
-  return html
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n")
-    .replace(/<\/h[1-6]>/gi, "\n")
-    .replace(/<\/li>/gi, "\n")
-    .replace(/<li[^>]*>/gi, "\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&#(\d+);/g, (_, codigo) => String.fromCharCode(Number(codigo)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, codigo) =>
-      String.fromCharCode(parseInt(codigo, 16))
-    )
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/\r/g, "")
-    .replace(/\u00a0/g, " ")
-    .replace(/[ \t]+/g, " ")
-    .split("\n")
-    .map((linha) => linha.trim())
-    .filter(Boolean)
-    .join("\n");
 }
 
 function separarBlocosDeVagas(texto: string): BlocoVaga[] {
@@ -237,10 +280,12 @@ function converterParaVagaFinal({
   dados,
   post,
   index,
+  contextoFonte,
 }: {
   dados: DadosVagaExtraida;
   post: WordpressPost;
   index: number;
+  contextoFonte: ContextoFonte;
 }): Vaga {
   const requisitos: string[] = [];
 
@@ -252,8 +297,15 @@ function converterParaVagaFinal({
     requisitos.push(`Atividades: ${dados.atividades}`);
   }
 
+  const textoParaPcd = [
+    dados.titulo,
+    dados.secao,
+    dados.requisitosObrigatorios,
+    dados.atividades,
+  ].join(" ");
+
   return {
-    id: `sine-${post.id}-${index + 1}`,
+    id: `${contextoFonte.idPrefixo}-${post.id}-${index + 1}`,
     slug: gerarSlug(`${dados.titulo}-manaus`),
     titulo: dados.titulo,
     empresa: "Empresa não informada",
@@ -266,20 +318,19 @@ function converterParaVagaFinal({
     salario: "Não informado",
     requisitos: requisitos.length > 0 ? requisitos : ["Não informado"],
     beneficios: ["Não informado"],
-    comoSeCandidatar:
-      "Os candidatos devem comparecer a um dos postos do Sine Manaus com documentos pessoais, currículo, comprovante de escolaridade e residência.",
-    fonte: "Prefeitura de Manaus - Sine Manaus",
+    comoSeCandidatar: contextoFonte.comoSeCandidatar,
+    fonte: contextoFonte.fonte,
     linkFonte: post.link,
     dataPublicacao: post.date.slice(0, 10),
     status: "ativa",
-    descricao: `Vaga de ${dados.titulo} divulgada pelo Sine Manaus.`,
+    descricao: `Vaga de ${dados.titulo} divulgada ${contextoFonte.descricaoOrigem}.`,
     tipoContrato: "Não informado",
     modalidade: "Presencial",
     quantidadeVagas: dados.quantidadeVagas,
     dataExpiracao: dados.dataExpiracao,
     emailCandidatura: "",
     whatsappCandidatura: "",
-    pcd: detectarPcd(dados),
+    pcd: detectarPcdEmTexto(textoParaPcd),
   };
 }
 
@@ -326,169 +377,4 @@ function ehSecaoDeVagas(linha: string) {
 
 function limparNomeDaSecao(linha: string) {
   return limparTexto(linha.replace(/\s*[-–—]\s*\d+.*$/, ""));
-}
-
-function inferirCategoria(titulo: string, secao: string) {
-  const texto = `${titulo} ${secao}`.toLowerCase();
-
-  if (
-    texto.includes("logíst") ||
-    texto.includes("estoque") ||
-    texto.includes("conferente") ||
-    texto.includes("almoxarife") ||
-    texto.includes("motorista") ||
-    texto.includes("entregador") ||
-    texto.includes("carga") ||
-    texto.includes("descarga")
-  ) {
-    return "Logística";
-  }
-
-  if (
-    texto.includes("produção") ||
-    texto.includes("producao") ||
-    texto.includes("indústria") ||
-    texto.includes("industria") ||
-    texto.includes("operador") ||
-    texto.includes("linha de produção")
-  ) {
-    return "Produção";
-  }
-
-  if (
-    texto.includes("vendedor") ||
-    texto.includes("atendente") ||
-    texto.includes("caixa") ||
-    texto.includes("loja") ||
-    texto.includes("comércio") ||
-    texto.includes("comercio") ||
-    texto.includes("balconista")
-  ) {
-    return "Comércio";
-  }
-
-  if (
-    texto.includes("administrativo") ||
-    texto.includes("assistente") ||
-    texto.includes("escritório") ||
-    texto.includes("escritorio")
-  ) {
-    return "Administrativo";
-  }
-
-  if (
-    texto.includes("limpeza") ||
-    texto.includes("serviços gerais") ||
-    texto.includes("servicos gerais") ||
-    texto.includes("conservação") ||
-    texto.includes("conservacao")
-  ) {
-    return "Serviços Gerais";
-  }
-
-  if (
-    texto.includes("técnico") ||
-    texto.includes("tecnico") ||
-    texto.includes("mecânico") ||
-    texto.includes("mecanico") ||
-    texto.includes("eletricista") ||
-    texto.includes("manutenção") ||
-    texto.includes("manutencao")
-  ) {
-    return "Técnico";
-  }
-
-  if (secao.toLowerCase().includes("comércio")) {
-    return "Comércio";
-  }
-
-  if (secao.toLowerCase().includes("indústria")) {
-    return "Indústria";
-  }
-
-  if (secao.toLowerCase().includes("serviço")) {
-    return "Serviços";
-  }
-
-  return "Outros";
-}
-
-function detectarPcd(dados: DadosVagaExtraida) {
-  const texto = `
-    ${dados.titulo}
-    ${dados.secao}
-    ${dados.requisitosObrigatorios}
-    ${dados.atividades}
-  `.toLowerCase();
-
-  return (
-    texto.includes("pcd") ||
-    texto.includes("pessoa com deficiência") ||
-    texto.includes("pessoas com deficiência") ||
-    texto.includes("deficiente")
-  );
-}
-
-function removerDuplicadas(vagas: Vaga[]) {
-  const mapa = new Map<string, Vaga>();
-
-  for (const vaga of vagas) {
-    const chave = [
-      normalizarParaComparacao(vaga.titulo),
-      vaga.quantidadeVagas,
-      normalizarParaComparacao(vaga.escolaridade),
-      normalizarParaComparacao(vaga.experiencia),
-      normalizarParaComparacao(vaga.requisitos.join(" ")),
-      vaga.dataExpiracao ?? "",
-    ].join("|");
-
-    if (!mapa.has(chave)) {
-      mapa.set(chave, vaga);
-    }
-  }
-
-  return Array.from(mapa.values());
-}
-
-function ajustarSlugsDuplicados(vagas: Vaga[]) {
-  const contador = new Map<string, number>();
-
-  return vagas.map((vaga) => {
-    const quantidade = contador.get(vaga.slug) ?? 0;
-    contador.set(vaga.slug, quantidade + 1);
-
-    if (quantidade === 0) {
-      return vaga;
-    }
-
-    return {
-      ...vaga,
-      slug: `${vaga.slug}-${quantidade + 1}`,
-    };
-  });
-}
-
-function gerarSlug(texto: string) {
-  return texto
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function limparTexto(texto: string) {
-  return texto
-    .replace(/\s+/g, " ")
-    .replace(/\s+;/g, ";")
-    .replace(/\s+\./g, ".")
-    .trim();
-}
-
-function normalizarParaComparacao(texto: string) {
-  return gerarSlug(texto);
-}
-
-function escaparRegex(texto: string) {
-  return texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

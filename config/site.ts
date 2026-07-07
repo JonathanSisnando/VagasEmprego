@@ -5,7 +5,9 @@ export const siteConfig = {
     
     url: "http://localhost:3000",
     
-    whatsapp: "+5592985194689",
-    email: "jonathansisnando@gmail.com"
+    whatsapp: "+5592982362217",
+    email: "jonathansisnando@gmail.com",
+
+    precoCurriculo: "R$7 a R$12",
 
 };

@@ -1,80 +1,49 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Vaga } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
 
-type RespostaSine = {
+type RespostaFonteExterna = {
   fonte: string;
   total: number;
   totalImportado?: number;
-  totalDeclaradoNoticia?: number | null;
   totalCargos?: number;
-  diferenca?: number | null;
   vagas: Vaga[];
-  post?: {
-    id: number;
-    slug: string;
-    titulo: string;
-    link: string;
-    dataPublicacao: string;
-  };
   erro?: string;
 };
 
-type DestaqueSine = {
-  id: string;
+type VagasFonteExternaSectionProps = {
+  apiEndpoint: string;
+  idPrefix: string;
+  eyebrow: string;
   titulo: string;
-  quantidadeVagas: number;
+  descricao: string;
+  linkFonteLabel?: string;
+  linkFonteHref?: string;
 };
 
-
-
-type ResumoSine = {
-  totalCargos: number;
-  totalOficial: number;
-  carregando: boolean;
-  erro: boolean;
-  destaques: DestaqueSine[];
-};
-
-type DestaqueSelecionado = {
-  id: string;
-  titulo: string;
-  acionadoEm: number;
-};
-
-type VagasSineSectionProps = {
-  onResumoChange?: (resumo: ResumoSine) => void;
-  destaqueSelecionado?: DestaqueSelecionado | null;
-};
-
-const filtrosSine = [
+const filtrosRapidos = [
   "Todas",
   "Sem experiência",
   "Ensino médio",
   "Ensino fundamental",
   "PCD",
-  "Administrativo",
-  "Produção",
-  "Atendimento",
-  "Logística",
-  "Comércio",
-  "Serviços gerais",
 ];
 
-export function VagasSineSection({
-  onResumoChange,
-  destaqueSelecionado,
-}: VagasSineSectionProps) {
-  const [vagasSine, setVagasSine] = useState<Vaga[]>([]);
-  const [post, setPost] = useState<RespostaSine["post"]>();
+export function VagasFonteExternaSection({
+  apiEndpoint,
+  idPrefix,
+  eyebrow,
+  titulo,
+  descricao,
+  linkFonteLabel,
+  linkFonteHref,
+}: VagasFonteExternaSectionProps) {
+  const [vagas, setVagas] = useState<Vaga[]>([]);
   const [fonte, setFonte] = useState("");
   const [totalImportado, setTotalImportado] = useState(0);
-  const [totalDeclaradoNoticia, setTotalDeclaradoNoticia] = useState<
-    number | null
-  >(null);
   const [totalCargos, setTotalCargos] = useState(0);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -82,48 +51,51 @@ export function VagasSineSection({
 
   const [busca, setBusca] = useState("");
   const [filtroSelecionado, setFiltroSelecionado] = useState("Todas");
-  const areaCardsRef = useRef<HTMLDivElement | null>(null);
-  const [rolarParaCards, setRolarParaCards] = useState(false);
 
   useEffect(() => {
-    async function carregarVagasSine() {
+    async function carregarVagas() {
       try {
-        const resposta = await fetch("/api/vagas-sine");
+        const resposta = await fetch(apiEndpoint);
 
         if (!resposta.ok) {
-          throw new Error("Erro ao buscar vagas do Sine Manaus.");
+          throw new Error("Erro ao buscar vagas.");
         }
 
-        const dados = (await resposta.json()) as RespostaSine;
+        const dados = (await resposta.json()) as RespostaFonteExterna;
 
         if (dados.erro) {
           throw new Error(dados.erro);
         }
 
-        setVagasSine(dados.vagas ?? []);
-        setPost(dados.post);
+        setVagas(dados.vagas ?? []);
         setFonte(dados.fonte);
-
         setTotalImportado(dados.totalImportado ?? dados.total ?? 0);
-        setTotalDeclaradoNoticia(dados.totalDeclaradoNoticia ?? null);
         setTotalCargos(dados.totalCargos ?? dados.vagas?.length ?? 0);
       } catch (error) {
         console.error(error);
         setErro(
-          "Não foi possível carregar as vagas no momento. Tente novamente mais tarde ou acesse a notícia oficial."
+          "Não foi possível carregar as vagas no momento. Tente novamente mais tarde."
         );
       } finally {
         setCarregando(false);
       }
     }
 
-    carregarVagasSine();
-  }, []);
+    carregarVagas();
+  }, [apiEndpoint]);
+
+  const categorias = useMemo(() => {
+    return Array.from(new Set(vagas.map((vaga) => vaga.categoria))).sort();
+  }, [vagas]);
+
+  const filtros = useMemo(() => {
+    return [...filtrosRapidos, ...categorias];
+  }, [categorias]);
 
   const vagasFiltradas = useMemo(() => {
     const termoBusca = normalizar(busca.trim());
 
-    return vagasSine.filter((vaga) => {
+    return vagas.filter((vaga) => {
       const textoDaVaga = normalizar(`
         ${vaga.titulo}
         ${vaga.empresa}
@@ -140,71 +112,10 @@ export function VagasSineSection({
 
       return correspondeBusca && correspondeFiltro;
     });
-  }, [busca, filtroSelecionado, vagasSine]);
+  }, [busca, filtroSelecionado, vagas]);
 
   const vagasVisiveis = vagasFiltradas.slice(0, quantidadeVisivel);
   const aindaTemMais = quantidadeVisivel < vagasFiltradas.length;
-  useEffect(() => {
-  if (!destaqueSelecionado) {
-    return;
-  }
-
-  setBusca(destaqueSelecionado.titulo);
-  setFiltroSelecionado("Todas");
-  setQuantidadeVisivel(12);
-  setRolarParaCards(true);
-}, [destaqueSelecionado]);
-
-useEffect(() => {
-  if (!rolarParaCards) {
-    return;
-  }
-
-  const timeoutId = window.setTimeout(() => {
-    areaCardsRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-    setRolarParaCards(false);
-  }, 120);
-
-  return () => window.clearTimeout(timeoutId);
-}, [rolarParaCards, vagasFiltradas.length]);
-
-  const totalOficial = totalDeclaradoNoticia ?? totalImportado;
-
-  const vagasComMaisOportunidades = useMemo(() => {
-    return [...vagasSine]
-      .filter((vaga) => (vaga.quantidadeVagas ?? 0) > 1)
-      .sort((a, b) => (b.quantidadeVagas ?? 0) - (a.quantidadeVagas ?? 0))
-      .slice(0, 5);
-  }, [vagasSine]);
-
-  const destaquesResumo = useMemo(() => {
-    return vagasComMaisOportunidades.slice(0, 3).map((vaga) => ({
-      id: String(vaga.id),
-      titulo: vaga.titulo,
-      quantidadeVagas: vaga.quantidadeVagas ?? 1,
-    }));
-  }, [vagasComMaisOportunidades]);
-
-  useEffect(() => {
-    onResumoChange?.({
-      totalCargos,
-      totalOficial,
-      carregando,
-      erro: Boolean(erro),
-      destaques: destaquesResumo,
-    });
-  }, [
-    onResumoChange,
-    totalCargos,
-    totalOficial,
-    carregando,
-    erro,
-    destaquesResumo,
-  ]);
 
   function limparFiltros() {
     setBusca("");
@@ -217,42 +128,38 @@ useEffect(() => {
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-            Sine Manaus
+            {eyebrow}
           </p>
 
           <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">
-            Vagas atualizadas do Sine Manaus
+            {titulo}
           </h2>
 
           <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-            Consulte as oportunidades antes de ir presencialmente ao atendimento.
+            {descricao}
           </p>
         </div>
 
-        {post?.link && (
+        {linkFonteHref && (
           <a
-            href={post.link}
+            href={linkFonteHref}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex w-fit items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
           >
-            Ver notícia oficial
+            {linkFonteLabel ?? "Ver fonte oficial"}
           </a>
         )}
       </div>
 
-      {post && (
+      {!carregando && !erro && vagas.length > 0 && (
         <div className="mt-5 flex flex-wrap gap-2 text-sm font-semibold text-slate-700">
           <span className="rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
-            {totalOficial} vagas oficiais
+            {totalImportado} vagas oficiais
           </span>
 
           <span className="rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
             {totalCargos} cargos organizados
-          </span>
-
-          <span className="rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
-            Publicado em {formatarData(post.dataPublicacao)}
           </span>
         </div>
       )}
@@ -272,32 +179,21 @@ useEffect(() => {
           </h3>
 
           <p className="mt-3 text-red-700">{erro}</p>
-
-          {post?.link && (
-            <a
-              href={post.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center justify-center rounded-xl bg-red-700 px-5 py-3 text-sm font-black text-white transition hover:bg-red-800"
-            >
-              Ver notícia oficial
-            </a>
-          )}
         </div>
       )}
 
-      {!carregando && !erro && vagasSine.length > 0 && (
+      {!carregando && !erro && vagas.length > 0 && (
         <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
           <div>
             <label
-              htmlFor="busca-sine"
+              htmlFor={`busca-${idPrefix}`}
               className="mb-2 block text-sm font-bold text-slate-900"
             >
-              Buscar nas vagas do Sine
+              Buscar nas vagas
             </label>
 
             <input
-              id="busca-sine"
+              id={`busca-${idPrefix}`}
               type="text"
               value={busca}
               onChange={(event) => {
@@ -311,11 +207,11 @@ useEffect(() => {
 
           <div className="mt-5">
             <p className="mb-3 text-sm font-bold text-slate-900">
-              Filtrar vagas do Sine
+              Filtrar vagas
             </p>
 
             <div className="flex flex-wrap gap-3">
-              {filtrosSine.map((filtro) => {
+              {filtros.map((filtro) => {
                 const selecionado = filtroSelecionado === filtro;
 
                 return (
@@ -355,7 +251,7 @@ useEffect(() => {
                   <span className="font-black text-slate-950">
                     {vagasFiltradas.length}
                   </span>{" "}
-                  cargos do Sine Manaus
+                  cargos
                 </>
               )}
             </p>
@@ -373,21 +269,21 @@ useEffect(() => {
         </div>
       )}
 
-      {!carregando && !erro && vagasSine.length === 0 && (
+      {!carregando && !erro && vagas.length === 0 && (
         <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center">
           <h3 className="text-xl font-black text-slate-950">
-            Nenhuma vaga do Sine encontrada
+            Nenhuma vaga encontrada nesta fonte
           </h3>
 
           <p className="mt-3 text-slate-600">
-            A notícia foi encontrada, mas nenhuma vaga foi extraída pelo parser.
+            Não conseguimos importar vagas desta fonte no momento.
           </p>
         </div>
       )}
 
       {!carregando &&
         !erro &&
-        vagasSine.length > 0 &&
+        vagas.length > 0 &&
         vagasFiltradas.length === 0 && (
           <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center">
             <h3 className="text-xl font-black text-slate-950">
@@ -411,10 +307,8 @@ useEffect(() => {
 
       {!carregando && !erro && vagasFiltradas.length > 0 && (
         <>
-<div
-  ref={areaCardsRef}
-  className="mt-6 scroll-mt-24 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
->            {vagasVisiveis.map((vaga) => (
+          <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {vagasVisiveis.map((vaga) => (
               <VagaCard key={vaga.id} vaga={vaga} />
             ))}
           </div>
@@ -426,70 +320,21 @@ useEffect(() => {
                 onClick={() => setQuantidadeVisivel((valor) => valor + 12)}
                 className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
               >
-                Mostrar mais vagas do Sine
+                Mostrar mais vagas
               </button>
             </div>
           )}
         </>
       )}
 
-      {!carregando && !erro && (
-        <div className="mt-10 grid gap-5 lg:grid-cols-[1fr_1fr]">
-          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5">
-            <p className="text-sm leading-6 text-amber-900">
-              <strong>Aviso importante:</strong> as vagas são gratuitas. Nunca
-              pague para se candidatar, fazer cadastro, treinamento ou garantir
-              contratação. Confirme sempre as orientações na notícia oficial da
-              Prefeitura de Manaus.
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-5">
-            <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-              Resumo da fonte
-            </p>
-
-            <div className="mt-3 space-y-2 text-sm text-slate-700">
-              <p>
-                <span className="font-black text-slate-950">Fonte:</span>{" "}
-                {fonte || "Prefeitura de Manaus - Sine Manaus"}
-              </p>
-
-              {post && (
-                <p>
-                  <span className="font-black text-slate-950">
-                    Publicação:
-                  </span>{" "}
-                  {formatarData(post.dataPublicacao)}
-                </p>
-              )}
-
-              <p>
-                <span className="font-black text-slate-950">
-                  Vagas oficiais:
-                </span>{" "}
-                {totalOficial}
-              </p>
-
-              <p>
-                <span className="font-black text-slate-950">
-                  Cargos organizados:
-                </span>{" "}
-                {totalCargos}
-              </p>
-            </div>
-
-            {post?.link && (
-              <a
-                href={post.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-              >
-                Ver notícia oficial
-              </a>
-            )}
-          </div>
+      {!carregando && !erro && fonte && (
+        <div className="mt-10 rounded-3xl border border-amber-200 bg-amber-50 p-5">
+          <p className="text-sm leading-6 text-amber-900">
+            <strong>Aviso importante:</strong> as vagas são gratuitas. Nunca
+            pague para se candidatar, fazer cadastro, treinamento ou garantir
+            contratação. Confirme sempre as orientações na fonte oficial (
+            {fonte}).
+          </p>
         </div>
       )}
     </section>
@@ -507,14 +352,13 @@ function filtrarPorTipo(vaga: Vaga, filtro: string) {
     return true;
   }
 
-  if (filtro === "Sem experiência" || filtro === "Não é necessário") {
+  if (filtro === "Sem experiência") {
     return (
       experiencia.includes("sem experiencia") ||
       experiencia.includes("nao e necessario") ||
       experiencia.includes("nao necessario") ||
       experiencia.includes("nao necessita") ||
       experiencia.includes("nao exige") ||
-      experiencia.includes("sem necessidade de experiencia") ||
       requisitos.includes("sem experiencia") ||
       requisitos.includes("nao e necessario") ||
       requisitos.includes("nao necessario") ||
@@ -535,64 +379,14 @@ function filtrarPorTipo(vaga: Vaga, filtro: string) {
     return vaga.pcd === true;
   }
 
-  if (filtro === "Administrativo") {
-    return (
-      categoria.includes("administrativo") || titulo.includes("administrativo")
-    );
-  }
-
-  if (filtro === "Produção") {
-    return categoria.includes("producao") || titulo.includes("producao");
-  }
-
-  if (filtro === "Atendimento") {
-    return (
-      categoria.includes("atendimento") ||
-      titulo.includes("atendente") ||
-      titulo.includes("recepcionista")
-    );
-  }
-
-  if (filtro === "Logística") {
-    return (
-      categoria.includes("logistica") ||
-      titulo.includes("logistico") ||
-      titulo.includes("estoque") ||
-      titulo.includes("almoxarife") ||
-      titulo.includes("conferente")
-    );
-  }
-
-  if (filtro === "Comércio") {
-    return (
-      categoria.includes("comercio") ||
-      titulo.includes("vendedor") ||
-      titulo.includes("loja") ||
-      titulo.includes("caixa")
-    );
-  }
-
-  if (filtro === "Serviços gerais") {
-    return (
-      categoria.includes("servicos gerais") ||
-      categoria.includes("servicos") ||
-      titulo.includes("limpeza") ||
-      titulo.includes("servicos gerais")
-    );
-  }
-
-  return true;
+  return (
+    categoria === normalizar(filtro) || titulo.includes(normalizar(filtro))
+  );
 }
 
 function normalizar(texto: string) {
   return texto
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
-}
-
-function formatarData(data: string) {
-  const dataObj = new Date(`${data}T00:00:00`);
-
-  return new Intl.DateTimeFormat("pt-BR").format(dataObj);
 }
