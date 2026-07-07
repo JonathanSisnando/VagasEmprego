@@ -1,11 +1,14 @@
 import Link from "next/link";
+import { Briefcase, Search, Eye, Send, Clock, TrendingUp } from "lucide-react";
 import { vagas } from "../data/vagas";
 import { VagaCard } from "../components/VagaCard";
 import { CurriculoCta } from "../components/CurriculoCta";
 import { ResumoVagasSineHome } from "../components/ResumoVagasSineHome";
+import { FadeIn } from "../components/FadeIn";
+import { Testimonials } from "../components/Testimonials";
 
 export default function HomePage() {
-  const ultimasVagas = vagas.slice(0, 3);
+  const ultimasVagas = vagas.slice(0, 6);
 
   const totalVagas = vagas.length;
 
@@ -17,14 +20,59 @@ export default function HomePage() {
     (vaga) => vaga.modalidade === "Presencial"
   ).length;
 
+  const dataAtual = new Date();
+  const dataFormatada = new Intl.DateTimeFormat("pt-BR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(dataAtual);
+
+  const stats = [
+    { valor: totalVagas, rotulo: "Vagas ativas", icone: Briefcase },
+    { valor: totalCategorias, rotulo: "Categorias", icone: TrendingUp },
+    { valor: totalPresenciais, rotulo: "Presenciais", icone: Eye },
+    { valor: totalVagasPcd, rotulo: "Vagas PCD", icone: Briefcase },
+  ];
+
+  const passos = [
+    {
+      numero: 1,
+      titulo: "Busque por categoria",
+      descricao:
+        "Filtre oportunidades por áreas como administrativo, produção, atendimento e outras categorias.",
+      icone: Search,
+    },
+    {
+      numero: 2,
+      titulo: "Confira os detalhes",
+      descricao:
+        "Veja requisitos, bairro, escolaridade, fonte da vaga e forma de candidatura.",
+      icone: Eye,
+    },
+    {
+      numero: 3,
+      titulo: "Candidate-se",
+      descricao:
+        "Siga as instruções da vaga — presencial no Sine, on-line no portal ou pelo contato informado.",
+      icone: Send,
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-slate-50">
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:items-center">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-              Vagas em Manaus atualizadas
-            </p>
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <FadeIn>
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="text-sm font-black uppercase tracking-wide text-blue-700">
+                Vagas em Manaus atualizadas
+              </p>
+
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+                <Clock className="size-3" aria-hidden="true" />
+                {dataFormatada}
+              </span>
+            </div>
 
             <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
               Encontre oportunidades de emprego em Manaus
@@ -56,143 +104,128 @@ export default function HomePage() {
               Sempre confira a fonte oficial antes de enviar seus dados ou se
               candidatar.
             </p>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-            <div className="rounded-2xl bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-slate-500">
-                Resumo da plataforma
-              </p>
-
-              <div className="mt-5 grid grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-3xl font-black text-blue-700">
-                    {totalVagas}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
-                    Vagas ativas
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-3xl font-black text-blue-700">
-                    {totalCategorias}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
-                    Categorias
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-3xl font-black text-blue-700">
-                    {totalPresenciais}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
-                    Presenciais
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-3xl font-black text-blue-700">
-                    {totalVagasPcd}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
-                    Vagas PCD
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-5">
-              <p className="text-sm font-black text-blue-800">
-                Dica para candidatos
-              </p>
-              <p className="mt-2 text-sm leading-6 text-blue-900">
-                Nunca pague para participar de processo seletivo. Desconfie de
-                promessas de contratação imediata e sempre confirme a origem da
-                vaga.
-              </p>
-            </div>
-          </div>
+          </FadeIn>
         </div>
       </section>
 
+      <FadeIn delay={100}>
+        <section className="border-b border-slate-200 bg-white">
+          <div className="mx-auto max-w-6xl px-4 pb-12">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {stats.map((stat) => (
+                <div
+                  key={stat.rotulo}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm"
+                >
+                  <stat.icone className="mx-auto size-5 text-blue-700" aria-hidden="true" />
+                  <p className="mt-2 text-3xl font-black text-slate-950">
+                    {stat.valor}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">
+                    {stat.rotulo}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </FadeIn>
+
+      <FadeIn delay={200}>
+        <section className="border-b border-slate-200 bg-white">
+          <div className="mx-auto max-w-6xl px-4 py-14">
+            <div className="text-center">
+              <p className="text-sm font-black uppercase tracking-wide text-blue-700">
+                Como funciona
+              </p>
+
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950">
+                Encontre a vaga ideal em 3 passos
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+                Reunimos oportunidades de fontes oficiais e divulgações para
+                facilitar sua busca.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {passos.map((passo) => (
+                <div
+                  key={passo.numero}
+                  className="group rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center transition hover:-translate-y-1 hover:border-blue-200 hover:bg-blue-50 hover:shadow-lg"
+                >
+                  <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-blue-700 text-2xl font-black text-white shadow-sm transition group-hover:scale-110">
+                    {passo.numero}
+                  </span>
+
+                  <passo.icone className="mx-auto mt-4 size-6 text-blue-700" aria-hidden="true" />
+
+                  <h3 className="mt-3 text-lg font-black text-slate-950">
+                    {passo.titulo}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {passo.descricao}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </FadeIn>
+
       <section className="mx-auto max-w-6xl px-4 pt-12">
-        <CurriculoCta />
+        <FadeIn>
+          <CurriculoCta />
+        </FadeIn>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12">
-        <ResumoVagasSineHome />
+        <FadeIn delay={100}>
+          <ResumoVagasSineHome />
+        </FadeIn>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-12">
-        <div className="rounded-3xl border border-blue-100 bg-blue-50 p-6">
-          <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-            Vagas cadastradas
-          </p>
+      <FadeIn delay={200}>
+        <section className="mx-auto max-w-6xl px-4 pb-12">
+          <div className="rounded-3xl border border-blue-100 bg-blue-50 p-6">
+            <p className="text-sm font-black uppercase tracking-wide text-blue-700">
+              Vagas cadastradas
+            </p>
 
-          <h2 className="mt-2 text-2xl font-black text-slate-950">
-            Oportunidades cadastradas no sistema
-          </h2>
+            <h2 className="mt-2 text-2xl font-black text-slate-950">
+              Oportunidades cadastradas no sistema
+            </h2>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
-            Estas vagas foram cadastradas manualmente na plataforma — não vêm
-            do Sine Manaus. Veja algumas das mais recentes abaixo.
-          </p>
-        </div>
-
-        <div className="mt-6 flex justify-end">
-          <Link
-            href="/vagas"
-            className="inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-          >
-            Ver todas as vagas
-          </Link>
-        </div>
-
-        <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {ultimasVagas.map((vaga) => (
-            <VagaCard key={vaga.id} vaga={vaga} />
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-12 md:grid-cols-3">
-          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-            <h3 className="text-lg font-black text-slate-950">
-              Busque por categoria
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Filtre oportunidades por áreas como administrativo, produção,
-              atendimento e outras categorias.
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
+              Estas vagas foram cadastradas manualmente na plataforma — não vêm
+              do Sine Manaus. Veja algumas das mais recentes abaixo.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-            <h3 className="text-lg font-black text-slate-950">
-              Confira os detalhes
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Veja requisitos, bairro, escolaridade, fonte da vaga e forma de
-              candidatura.
-            </p>
+          <div className="mt-6 flex justify-end">
+            <Link
+              href="/vagas"
+              className="inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+            >
+              Ver todas as vagas
+            </Link>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-            <h3 className="text-lg font-black text-slate-950">
-              Envie oportunidades
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Empresas e pessoas podem sugerir vagas para ajudar mais candidatos
-              em Manaus.
-            </p>
+          <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {ultimasVagas.map((vaga) => (
+              <FadeIn key={vaga.id}>
+                <VagaCard vaga={vaga} />
+              </FadeIn>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </FadeIn>
+
+      <FadeIn>
+        <Testimonials />
+      </FadeIn>
     </main>
   );
 }
