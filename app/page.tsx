@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase, Search, Eye, Send, Clock, TrendingUp } from "lucide-react";
+import { Search, Eye, Send, Clock } from "lucide-react";
 import { vagas } from "../data/vagas";
 import { VagaCard } from "../components/VagaCard";
 import { CurriculoCta } from "../components/CurriculoCta";
@@ -10,29 +10,12 @@ import { Testimonials } from "../components/Testimonials";
 export default function HomePage() {
   const ultimasVagas = vagas.slice(0, 6);
 
-  const totalVagas = vagas.length;
-
-  const totalCategorias = new Set(vagas.map((vaga) => vaga.categoria)).size;
-
-  const totalVagasPcd = vagas.filter((vaga) => vaga.pcd).length;
-
-  const totalPresenciais = vagas.filter(
-    (vaga) => vaga.modalidade === "Presencial"
-  ).length;
-
   const dataAtual = new Date();
   const dataFormatada = new Intl.DateTimeFormat("pt-BR", {
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(dataAtual);
-
-  const stats = [
-    { valor: totalVagas, rotulo: "Vagas ativas", icone: Briefcase },
-    { valor: totalCategorias, rotulo: "Categorias", icone: TrendingUp },
-    { valor: totalPresenciais, rotulo: "Presenciais", icone: Eye },
-    { valor: totalVagasPcd, rotulo: "Vagas PCD", icone: Briefcase },
-  ];
 
   const passos = [
     {
@@ -108,30 +91,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <FadeIn delay={100}>
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-6xl px-4 pb-12">
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              {stats.map((stat) => (
-                <div
-                  key={stat.rotulo}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm"
-                >
-                  <stat.icone className="mx-auto size-5 text-blue-700" aria-hidden="true" />
-                  <p className="mt-2 text-3xl font-black text-slate-950">
-                    {stat.valor}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
-                    {stat.rotulo}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </FadeIn>
-
-      <FadeIn delay={200}>
+      <FadeIn>
         <section className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-6xl px-4 py-14">
             <div className="text-center">
