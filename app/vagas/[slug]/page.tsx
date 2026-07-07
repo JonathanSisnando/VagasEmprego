@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { vagas } from "../../../data/vagas";
 import { CurriculoCta } from "../../../components/CurriculoCta";
-import { normalizar } from "../../../lib/vaga-utils";
+import { normalizar, formatarData } from "../../../lib/vaga-utils";
 import {
   buscarNoticiaSineMaisRecente,
   extrairVagasDoPost,
@@ -310,12 +310,12 @@ export default async function VagaDetalhePage({
 
               <InfoCard titulo="Salário" icon={Banknote} valor={vaga.salario} />
 
-              <InfoCard titulo="Publicado em" icon={CalendarDays} valor={vaga.dataPublicacao} />
+              <InfoCard titulo="Publicado em" icon={CalendarDays} valor={formatarData(vaga.dataPublicacao)} />
 
               <InfoCard titulo="Status" icon={BadgeCheck} valor={vaga.status} />
 
               {vaga.dataExpiracao && (
-                <InfoCard titulo="Disponível até" icon={CalendarCheck} valor={vaga.dataExpiracao} />
+                <InfoCard titulo="Disponível até" icon={CalendarCheck} valor={formatarData(vaga.dataExpiracao)} />
               )}
 
               {vaga.quantidadeVagas && (
@@ -484,7 +484,7 @@ export default async function VagaDetalhePage({
                   <span className="font-black text-slate-900">
                     Disponível até:
                   </span>{" "}
-                  {vaga.dataExpiracao}
+                  {formatarData(vaga.dataExpiracao)}
                 </p>
               )}
             </div>

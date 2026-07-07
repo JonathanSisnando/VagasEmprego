@@ -286,6 +286,13 @@ export function detectarPcdEmTexto(texto: string) {
   );
 }
 
+export function formatarData(data: string) {
+  if (!data) return "";
+  const partes = data.split("-");
+  if (partes.length !== 3) return data;
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
 export function removerVagasDuplicadas(vagas: Vaga[]) {
   const mapa = new Map<string, Vaga>();
 
