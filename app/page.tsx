@@ -8,7 +8,9 @@ import { FadeIn } from "../components/FadeIn";
 import { Testimonials } from "../components/Testimonials";
 
 export default function HomePage() {
-  const ultimasVagas = vagas.slice(0, 6);
+  const vagasDestaque = [...vagas].sort(
+    (a, b) => (b.quantidadeVagas ?? 1) - (a.quantidadeVagas ?? 1)
+  ).slice(0, 6);
 
   const dataAtual = new Date();
   const dataFormatada = new Intl.DateTimeFormat("pt-BR", {
@@ -174,7 +176,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {ultimasVagas.map((vaga) => (
+            {vagasDestaque.map((vaga) => (
               <FadeIn key={vaga.id}>
                 <VagaCard vaga={vaga} />
               </FadeIn>
