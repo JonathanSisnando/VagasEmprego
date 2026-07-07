@@ -20,13 +20,21 @@ export function Header() {
             type="button"
             onClick={() => setMenuAberto(!menuAberto)}
             className="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 md:hidden"
-            aria-label="Abrir menu"
+            aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
             aria-expanded={menuAberto}
           >
             <span className="text-2xl leading-none">
               {menuAberto ? "×" : "☰"}
             </span>
           </button>
+
+          {menuAberto && (
+            <div
+              className="fixed inset-0 z-30 bg-black/20 md:hidden"
+              onClick={() => setMenuAberto(false)}
+              aria-hidden="true"
+            />
+          )}
 
           <nav className="hidden items-center gap-4 text-sm font-medium text-slate-700 md:flex">
             <Link href="/vagas" className="hover:text-blue-700">
@@ -48,7 +56,7 @@ export function Header() {
         </div>
 
         {menuAberto && (
-          <nav className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 text-sm font-medium text-slate-700 md:hidden">
+          <nav className="relative z-40 mt-4 flex flex-col gap-3 border-t border-slate-100 bg-white pt-4 text-sm font-medium text-slate-700 md:hidden">
             <Link
               href="/vagas"
               onClick={() => setMenuAberto(false)}

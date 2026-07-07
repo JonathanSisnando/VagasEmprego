@@ -75,7 +75,7 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
           </h3>
           <p className="mt-1 max-w-xl text-sm leading-6 text-slate-700">
             Envie sua vaga de interesse e seu currículo atual — devolvemos uma
-            versão adaptada, ou construimos um do zero para você, aumentando suas chances de ser chamado para a entrevista.
+            versão adaptada, ou construímos um do zero para você, aumentando suas chances de ser chamado para a entrevista.
           </p>
 
         </div>
