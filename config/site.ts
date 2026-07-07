@@ -3,7 +3,7 @@ export const siteConfig = {
 
     descricao: "Central independente de divulgação de oportunidades de emprego em Manaus.",
     
-    url: "https://vagasempregomanaus.com.br",
+    url: "https://vagas-manaus-hoje.vercel.app",
     
     whatsapp: "+5592982362217",
     email: "jonathansisnando@gmail.com",

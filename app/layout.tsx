@@ -32,6 +32,10 @@ export const metadata: Metadata = {
 
   publisher: siteConfig.nome,
 
+  verification: {
+    google: "WM3OPapFJe5xi4XlDz4H3i6hQ-KPmAEUK9piDowmkZM",
+  },
+
   robots: {
     index: true,
     follow: true,

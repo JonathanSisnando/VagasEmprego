@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${siteConfig.url}/vagas`,
       lastModified: dataAtual,
-      changeFrequency: "daily",
+      changeFrequency: "hourly",
       priority: 0.9,
     },
     {
@@ -47,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const paginasDasVagas: MetadataRoute.Sitemap = vagas.map((vaga) => ({
     url: `${siteConfig.url}/vagas/${vaga.slug}`,
     lastModified: new Date(vaga.dataPublicacao),
-    changeFrequency: "weekly",
+    changeFrequency: "daily",
     priority: 0.8,
   }));
 
