@@ -3,7 +3,7 @@ import { FileText, Sparkles, Zap } from "lucide-react";
 import { siteConfig } from "../config/site";
 
 type CurriculoCtaProps = {
-  variant?: "banner" | "sidebar";
+  variant?: "banner" | "sidebar" | "inline";
   vaga?: string;
   fonte?: string;
 };
@@ -24,6 +24,18 @@ function montarHref(vaga?: string, fonte?: string) {
 
 export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaProps) {
   const href = montarHref(vaga, fonte);
+
+  if (variant === "inline") {
+    return (
+      <p className="text-sm text-slate-600">
+        Precisa de ajuda com seu currículo?{" "}
+        <Link href={href} className="font-bold text-blue-700 hover:underline">
+          Saiba como adaptar o seu
+        </Link>
+        .
+      </p>
+    );
+  }
 
   if (variant === "sidebar") {
     return (

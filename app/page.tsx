@@ -1,7 +1,7 @@
 import { Search, Eye, Send, Clock } from "lucide-react";
 import { ResumoVagasSineHome } from "../components/ResumoVagasSineHome";
 import { FadeIn } from "../components/FadeIn";
-import { Testimonials } from "../components/Testimonials";
+import { CurriculoCta } from "../components/CurriculoCta";
 
 export default function HomePage() {
   const dataAtual = new Date();
@@ -60,6 +60,10 @@ export default function HomePage() {
               reunindo oportunidades por categoria, bairro, escolaridade e
               requisitos.
             </p>
+
+            <div className="mt-4">
+              <CurriculoCta variant="inline" />
+            </div>
           </FadeIn>
         </div>
       </section>
@@ -113,10 +117,6 @@ export default function HomePage() {
           <ResumoVagasSineHome />
         </FadeIn>
       </section>
-
-      <FadeIn>
-        <Testimonials />
-      </FadeIn>
     </main>
   );
 }
