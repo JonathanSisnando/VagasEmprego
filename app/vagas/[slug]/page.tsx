@@ -245,22 +245,7 @@ export default async function VagaDetalhePage({
           </div>
 
           <div className="mt-10 space-y-6 border-t border-slate-200 pt-10">
-          {ehVagaSine && (
-            <>
-              <SineInstructions />
-
-              {temLinkFonte && (
-                <a
-                  href={vaga.linkFonte}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-6 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
-                >
-                  Ver notícia oficial desta vaga
-                </a>
-              )}
-            </>
-          )}
+          {ehVagaSine && <SineInstructions />}
 
           {ehVagaSetemp && (
             <article className="rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
@@ -273,17 +258,6 @@ export default async function VagaDetalhePage({
                 do Governo do Amazonas. A candidatura é feita diretamente na
                 página da vaga no portal.
               </p>
-
-              {temLinkFonte && (
-                <a
-                  href={vaga.linkFonte}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
-                >
-                  Ver vaga no Portal do Trabalhador
-                </a>
-              )}
             </article>
           )}
 
@@ -296,17 +270,6 @@ export default async function VagaDetalhePage({
               <p className="mt-4 leading-8 text-slate-700">
                 {vaga.comoSeCandidatar}
               </p>
-
-              {temLinkFonte && (
-                <a
-                  href={vaga.linkFonte}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
-                >
-                  Ver fonte oficial
-                </a>
-              )}
             </article>
           )}
 
@@ -443,7 +406,9 @@ export default async function VagaDetalhePage({
             <p className="mt-4 leading-7 text-slate-600">
               {ehVagaSine
                 ? "Confira acima os postos, documentos e orientações para se candidatar presencialmente no Sine Manaus."
-                : vaga.comoSeCandidatar}
+                : ehVagaSetemp
+                  ? "Confira acima como funciona a candidatura pelo Portal do Trabalhador."
+                  : "Confira acima como funciona a candidatura para esta vaga."}
             </p>
 
             <div className="mt-5 flex gap-3 rounded-xl border-l-4 border-amber-500 bg-amber-50 px-4 py-3">
