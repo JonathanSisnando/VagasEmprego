@@ -221,6 +221,12 @@ export default async function VagaDetalhePage({
                   Ensino médio
                 </span>
               )}
+
+              {!ehVagaSine && !ehVagaSetemp && (
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                  {vaga.fonte}
+                </span>
+              )}
             </div>
 
             <h1 className="mt-5 text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
@@ -283,6 +289,29 @@ export default async function VagaDetalhePage({
                   className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
                 >
                   Ver vaga no Portal do Trabalhador
+                </a>
+              )}
+            </article>
+          )}
+
+          {!ehVagaSine && !ehVagaSetemp && (
+            <article className="rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
+              <h2 className="text-2xl font-black text-slate-950">
+                Como se candidatar
+              </h2>
+
+              <p className="mt-4 leading-8 text-slate-700">
+                {vaga.comoSeCandidatar}
+              </p>
+
+              {temLinkFonte && (
+                <a
+                  href={vaga.linkFonte}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
+                >
+                  Ver fonte oficial
                 </a>
               )}
             </article>
