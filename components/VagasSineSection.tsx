@@ -5,7 +5,7 @@ import type { Vaga } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
 import { SineInstructions } from "./SineInstructions";
-import { normalizar, filtrarPorTipo } from "../lib/vaga-utils";
+import { normalizar, filtrarPorTipo, formatarData } from "../lib/vaga-utils";
 
 type RespostaSine = {
   fonte: string;
@@ -504,10 +504,3 @@ useEffect(() => {
   );
 }
 
-
-
-function formatarData(data: string) {
-  const dataObj = new Date(`${data}T00:00:00`);
-
-  return new Intl.DateTimeFormat("pt-BR").format(dataObj);
-}
