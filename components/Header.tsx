@@ -49,6 +49,10 @@ export function Header() {
               Enviar vaga
             </Link>
 
+            <Link href="/parceiros" className="hover:text-blue-700">
+              Parceiros
+            </Link>
+
             <Link href="/contato" className="hover:text-blue-700">
               Contato
             </Link>
@@ -79,6 +83,14 @@ export function Header() {
               className="rounded-lg px-2 py-2 hover:bg-slate-50 hover:text-blue-700"
             >
               Enviar vaga
+            </Link>
+
+            <Link
+              href="/parceiros"
+              onClick={() => setMenuAberto(false)}
+              className="rounded-lg px-2 py-2 hover:bg-slate-50 hover:text-blue-700"
+            >
+              Parceiros
             </Link>
 
             <Link

@@ -65,6 +65,10 @@ export function Footer() {
     Enviar vaga
   </Link>
 
+  <Link href="/parceiros" className="hover:text-blue-700">
+    Parceiros
+  </Link>
+
   <Link href="/contato" className="hover:text-blue-700">
     Contato
   </Link>
