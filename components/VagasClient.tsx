@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { AlertTriangle, Search } from "lucide-react";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
 import { CurriculoCta } from "./CurriculoCta";
@@ -157,16 +157,20 @@ export function VagasClient() {
 
       {!carregando && (
         <section className="mx-auto max-w-6xl px-4 pt-8">
-          <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
-            <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5">
-              <p className="text-sm leading-6 text-amber-900">
-                <strong>Aviso importante:</strong> as vagas são gratuitas. Nunca
-                pague para se candidatar, fazer cadastro, treinamento ou
-                garantir contratação. Confirme sempre a fonte oficial de cada
-                vaga.
-              </p>
-            </div>
+          <div className="flex gap-3 rounded-xl border-l-4 border-amber-500 bg-amber-50 px-4 py-4">
+            <AlertTriangle
+              className="mt-0.5 size-5 shrink-0 text-amber-600"
+              aria-hidden="true"
+            />
+            <p className="text-sm leading-6 text-amber-900">
+              <strong className="font-black">Vagas são gratuitas.</strong>{" "}
+              Nunca pague para se candidatar, fazer cadastro, treinamento ou
+              garantir contratação. Confirme sempre a fonte oficial de cada
+              vaga.
+            </p>
+          </div>
 
+          <div className="mt-5">
             <div className="rounded-3xl border border-slate-200 bg-white p-5">
               <p className="text-sm font-black uppercase tracking-wide text-blue-700">
                 Resumo geral

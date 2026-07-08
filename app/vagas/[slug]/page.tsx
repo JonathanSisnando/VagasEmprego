@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  AlertTriangle,
   BadgeCheck,
   Banknote,
   CalendarCheck,
@@ -445,6 +446,18 @@ export default async function VagaDetalhePage({
                 : vaga.comoSeCandidatar}
             </p>
 
+            <div className="mt-5 flex gap-3 rounded-xl border-l-4 border-amber-500 bg-amber-50 px-4 py-3">
+              <AlertTriangle
+                className="mt-0.5 size-5 shrink-0 text-amber-600"
+                aria-hidden="true"
+              />
+              <p className="text-sm leading-6 text-amber-900">
+                <strong className="font-black">Vagas são gratuitas.</strong>{" "}
+                Nunca pague para se candidatar, fazer cadastro, treinamento
+                ou garantir contratação.
+              </p>
+            </div>
+
             <div className="mt-6 space-y-3">
               {ehVagaSine && temLinkFonte && (
                 <a
@@ -505,18 +518,6 @@ export default async function VagaDetalhePage({
                   vaga antes de enviar seus dados.
                 </div>
               )}
-            </div>
-
-            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-              <p className="text-sm font-black text-amber-900">
-                Aviso importante
-              </p>
-
-              <p className="mt-2 text-sm leading-6 text-amber-900">
-                As vagas são gratuitas. Nunca pague para se candidatar, fazer
-                cadastro, treinamento ou garantir contratação. Confirme sempre
-                as orientações na notícia oficial.
-              </p>
             </div>
 
             <div className="mt-6 border-t border-slate-100 pt-5 text-sm text-slate-600">
