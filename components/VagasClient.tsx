@@ -6,8 +6,7 @@ import { vagas } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagasSineSection } from "./VagasSineSection";
 import { VagasFonteExternaSection } from "./VagasFonteExternaSection";
-import { CurriculoCta } from "./CurriculoCta";
-import { normalizar, filtrarPorTipo } from "../lib/vaga-utils";
+import { normalizar, filtrarPorTipo, formatarData } from "../lib/vaga-utils";
 
 type DestaqueSine = {
   id: string;
@@ -27,6 +26,11 @@ type ResumoSine = {
   carregando: boolean;
   erro: boolean;
   destaques: DestaqueSine[];
+  fonte: string;
+  post?: {
+    link: string;
+    dataPublicacao: string;
+  };
 };
 
 const filtrosRapidos = [
@@ -50,6 +54,8 @@ export function VagasClient() {
     carregando: true,
     erro: false,
     destaques: [],
+    fonte: "",
+    post: undefined,
   });
 
   const [destaqueSelecionado, setDestaqueSelecionado] =
@@ -139,9 +145,67 @@ export function VagasClient() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-8">
-        <CurriculoCta />
-      </section>
+      {!resumoSine.carregando && !resumoSine.erro && (
+        <section className="mx-auto max-w-6xl px-4 pt-8">
+          <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+            <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5">
+              <p className="text-sm leading-6 text-amber-900">
+                <strong>Aviso importante:</strong> as vagas são gratuitas. Nunca
+                pague para se candidatar, fazer cadastro, treinamento ou
+                garantir contratação. Confirme sempre as orientações na
+                notícia oficial da Prefeitura de Manaus.
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-5">
+              <p className="text-sm font-black uppercase tracking-wide text-blue-700">
+                Resumo da fonte
+              </p>
+
+              <div className="mt-3 space-y-2 text-sm text-slate-700">
+                <p>
+                  <span className="font-black text-slate-950">Fonte:</span>{" "}
+                  {resumoSine.fonte || "Prefeitura de Manaus - Sine Manaus"}
+                </p>
+
+                {resumoSine.post && (
+                  <p>
+                    <span className="font-black text-slate-950">
+                      Publicação:
+                    </span>{" "}
+                    {formatarData(resumoSine.post.dataPublicacao)}
+                  </p>
+                )}
+
+                <p>
+                  <span className="font-black text-slate-950">
+                    Vagas oficiais:
+                  </span>{" "}
+                  {resumoSine.totalOficial}
+                </p>
+
+                <p>
+                  <span className="font-black text-slate-950">
+                    Cargos organizados:
+                  </span>{" "}
+                  {resumoSine.totalCargos}
+                </p>
+              </div>
+
+              {resumoSine.post?.link && (
+                <a
+                  href={resumoSine.post.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                >
+                  Ver notícia oficial
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto max-w-6xl px-4 py-8">
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">

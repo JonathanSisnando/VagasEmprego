@@ -4,7 +4,6 @@ import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import type { Vaga } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
-import { SineInstructions } from "./SineInstructions";
 import { normalizar, filtrarPorTipo, formatarData } from "../lib/vaga-utils";
 
 type RespostaSine = {
@@ -39,6 +38,11 @@ type ResumoSine = {
   carregando: boolean;
   erro: boolean;
   destaques: DestaqueSine[];
+  fonte: string;
+  post?: {
+    link: string;
+    dataPublicacao: string;
+  };
 };
 
 type DestaqueSelecionado = {
@@ -200,6 +204,8 @@ useEffect(() => {
       carregando,
       erro: Boolean(erro),
       destaques: destaquesResumo,
+      fonte: fonte || "Prefeitura de Manaus - Sine Manaus",
+      post: post ? { link: post.link, dataPublicacao: post.dataPublicacao } : undefined,
     });
   }, [
     onResumoChange,
@@ -208,6 +214,8 @@ useEffect(() => {
     carregando,
     erro,
     destaquesResumo,
+    fonte,
+    post,
   ]);
 
   function limparFiltros() {
@@ -437,69 +445,6 @@ useEffect(() => {
         </>
       )}
 
-      {!carregando && !erro && (
-        <div className="mt-10 grid gap-5 lg:grid-cols-[1fr_1fr]">
-          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5">
-            <p className="text-sm leading-6 text-amber-900">
-              <strong>Aviso importante:</strong> as vagas são gratuitas. Nunca
-              pague para se candidatar, fazer cadastro, treinamento ou garantir
-              contratação. Confirme sempre as orientações na notícia oficial da
-              Prefeitura de Manaus.
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-5">
-            <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-              Resumo da fonte
-            </p>
-
-            <div className="mt-3 space-y-2 text-sm text-slate-700">
-              <p>
-                <span className="font-black text-slate-950">Fonte:</span>{" "}
-                {fonte || "Prefeitura de Manaus - Sine Manaus"}
-              </p>
-
-              {post && (
-                <p>
-                  <span className="font-black text-slate-950">
-                    Publicação:
-                  </span>{" "}
-                  {formatarData(post.dataPublicacao)}
-                </p>
-              )}
-
-              <p>
-                <span className="font-black text-slate-950">
-                  Vagas oficiais:
-                </span>{" "}
-                {totalOficial}
-              </p>
-
-              <p>
-                <span className="font-black text-slate-950">
-                  Cargos organizados:
-                </span>{" "}
-                {totalCargos}
-              </p>
-            </div>
-
-            {post?.link && (
-              <a
-                href={post.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-              >
-                Ver notícia oficial
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-10">
-        <SineInstructions />
-      </div>
     </section>
   );
 }
