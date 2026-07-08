@@ -48,6 +48,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    {
+      url: `${siteConfig.url}/parceiros`,
+      lastModified: dataAtual,
+      changeFrequency: "weekly",
+      priority: 0.5,
+    },
     ...vagas.map((vaga) => ({
       url: `${siteConfig.url}/vagas/${vaga.slug}`,
       lastModified: new Date(vaga.dataPublicacao),
