@@ -485,31 +485,6 @@ export default async function VagaDetalhePage({
               )}
             </div>
 
-            <div className="mt-6 border-t border-slate-100 pt-5 text-sm text-slate-600">
-              <p>
-                <span className="font-black text-slate-900">Fonte:</span>{" "}
-                {vaga.fonte}
-              </p>
-
-              {vaga.quantidadeVagas && (
-                <p className="mt-2">
-                  <span className="font-black text-slate-900">
-                    Quantidade:
-                  </span>{" "}
-                  {vaga.quantidadeVagas} vaga
-                  {vaga.quantidadeVagas > 1 ? "s" : ""}
-                </p>
-              )}
-
-              {vaga.dataExpiracao && (
-                <p className="mt-2">
-                  <span className="font-black text-slate-900">
-                    Disponível até:
-                  </span>{" "}
-                  {formatarData(vaga.dataExpiracao)}
-                </p>
-              )}
-            </div>
           </div>
 
           <CurriculoCta variant="sidebar" vaga={vaga.titulo} fonte={vaga.fonte} />
