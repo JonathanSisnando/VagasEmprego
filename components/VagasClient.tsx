@@ -250,7 +250,7 @@ export function VagasClient() {
                   <span className="font-black text-slate-950">
                     {todasVagas.length}
                   </span>{" "}
-                  vagas no total.
+                  cargos no total.
                 </>
               )}
             </p>
@@ -400,7 +400,7 @@ export function VagasClient() {
                       <span className="font-black text-slate-950">
                         {vagasFiltradas.length}
                       </span>{" "}
-                      vaga
+                      cargo
                       {vagasFiltradas.length !== 1 ? "s" : ""}
                     </>
                   )}
