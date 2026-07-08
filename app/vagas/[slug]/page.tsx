@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { vagas } from "../../../data/vagas";
 import { CurriculoCta } from "../../../components/CurriculoCta";
+import { SineInstructions } from "../../../components/SineInstructions";
 import { normalizar, formatarData } from "../../../lib/vaga-utils";
 import {
   buscarNoticiaSineMaisRecente,
@@ -244,29 +245,20 @@ export default async function VagaDetalhePage({
 
           <div className="mt-10 space-y-6 border-t border-slate-200 pt-10">
           {ehVagaSine && (
-            <article className="rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
-              <h2 className="text-2xl font-black text-slate-950">
-                Como se candidatar
-              </h2>
-
-              <p className="mt-4 leading-8 text-slate-700">
-                Esta vaga foi divulgada pela Prefeitura de Manaus/Sine Manaus. O
-                cadastro deve ser feito presencialmente no Sine Manaus, conforme
-                orientações da notícia oficial. Antes de ir, confira
-                escolaridade, experiência, requisitos e prazo de disponibilidade.
-              </p>
+            <>
+              <SineInstructions />
 
               {temLinkFonte && (
                 <a
                   href={vaga.linkFonte}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800"
+                  className="ml-6 inline-flex items-center justify-center rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
                 >
-                  Ver notícia oficial
+                  Ver notícia oficial desta vaga
                 </a>
               )}
-            </article>
+            </>
           )}
 
           {ehVagaSetemp && (
@@ -449,7 +441,7 @@ export default async function VagaDetalhePage({
 
             <p className="mt-4 leading-7 text-slate-600">
               {ehVagaSine
-                ? "Esta vaga não recebe candidatura pelo site. O cadastro deve ser feito presencialmente no Sine Manaus, seguindo as orientações da notícia oficial da Prefeitura de Manaus."
+                ? "Confira acima os postos, documentos e orientações para se candidatar presencialmente no Sine Manaus."
                 : vaga.comoSeCandidatar}
             </p>
 

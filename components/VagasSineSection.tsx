@@ -4,6 +4,7 @@ import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import type { Vaga } from "../data/vagas";
 import { VagaCard } from "./VagaCard";
 import { VagaCardSkeleton } from "./VagaCardSkeleton";
+import { SineInstructions } from "./SineInstructions";
 import { normalizar, filtrarPorTipo } from "../lib/vaga-utils";
 
 type RespostaSine = {
@@ -495,6 +496,10 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+      <div className="mt-10">
+        <SineInstructions />
+      </div>
     </section>
   );
 }
