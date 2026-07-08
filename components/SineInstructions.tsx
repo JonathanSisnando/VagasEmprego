@@ -1,4 +1,11 @@
+"use client";
+
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+
 export function SineInstructions() {
+  const [expandido, setExpandido] = useState(false);
+
   return (
     <div className="rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
       <h2 className="text-xl font-black text-slate-950">
@@ -6,12 +13,11 @@ export function SineInstructions() {
       </h2>
 
       <p className="mt-4 leading-8 text-slate-700">
-        Os candidatos devem comparecer a um dos postos do Sine Manaus para
-        participar da pré-seleção ou receber orientação de cadastro, Carteira de
-        Trabalho Digital e seguro-desemprego.
+        Vá a um dos postos do Sine Manaus levando documentos pessoais
+        originais e currículo atualizado — sem necessidade de cópias.
       </p>
 
-      <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-500">
+      <h3 className="mt-5 text-sm font-black uppercase tracking-wide text-slate-500">
         Endereços dos postos
       </h3>
 
@@ -33,64 +39,84 @@ export function SineInstructions() {
         </li>
       </ul>
 
-      <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-500">
-        Documentos necessários
-      </h3>
+      <button
+        type="button"
+        onClick={() => setExpandido((valor) => !valor)}
+        aria-expanded={expandido}
+        className="mt-5 flex items-center gap-2 text-sm font-black text-blue-700 transition hover:text-blue-800"
+      >
+        {expandido
+          ? "Ver menos"
+          : "Ver lista completa de documentos e orientações"}
+        <ChevronDown
+          className={`size-4 transition-transform ${expandido ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        />
+      </button>
 
-      <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-700">
-        {[
-          "Comprovante de vacinação (Covid-19)",
-          "Currículo atualizado",
-          "Certificados de cursos",
-          "Documentos pessoais (RG, CPF, PIS, CTPS)",
-          "Comprovante de escolaridade",
-          "Comprovante de residência",
-        ].map((doc) => (
-          <li key={doc} className="flex gap-3">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-700" />
-            <span>
-              <strong>{doc}</strong> (originais, sem necessidade de cópias)
-            </span>
-          </li>
-        ))}
-      </ul>
+      {expandido && (
+        <div className="mt-5 border-t border-blue-100 pt-5">
+          <h3 className="text-sm font-black uppercase tracking-wide text-slate-500">
+            Documentos necessários
+          </h3>
 
-      <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-500">
-        Orientações importantes
-      </h3>
+          <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-700">
+            {[
+              "Comprovante de vacinação (Covid-19)",
+              "Currículo atualizado",
+              "Certificados de cursos",
+              "Documentos pessoais (RG, CPF, PIS, CTPS)",
+              "Comprovante de escolaridade",
+              "Comprovante de residência",
+            ].map((doc) => (
+              <li key={doc} className="flex gap-3">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-700" />
+                <span>
+                  <strong>{doc}</strong> (originais, sem necessidade de
+                  cópias)
+                </span>
+              </li>
+            ))}
+          </ul>
 
-      <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-700">
-        <li className="flex gap-3">
-          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-          <span>
-            Mantenha seu cadastro atualizado, especialmente ao finalizar novas
-            qualificações.
-          </span>
-        </li>
+          <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-500">
+            Orientações importantes
+          </h3>
 
-        <li className="flex gap-3">
-          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-          <span>
-            Para vagas específicas, podem ser solicitados documentos adicionais
-            (cursos ou certificações). Fique atento aos &ldquo;Requisitos
-            Obrigatórios&rdquo; de cada vaga.
-          </span>
-        </li>
+          <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-700">
+            <li className="flex gap-3">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+              <span>
+                Mantenha seu cadastro atualizado, especialmente ao finalizar
+                novas qualificações.
+              </span>
+            </li>
 
-        <li className="flex gap-3">
-          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-          <span>
-            A vestimenta deve ser adequada. Não é permitido bermudas, shorts,
-            minissaias, camisetas regatas e chinelos.
-          </span>
-        </li>
-      </ul>
+            <li className="flex gap-3">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+              <span>
+                Para vagas específicas, podem ser solicitados documentos
+                adicionais (cursos ou certificações). Fique atento aos
+                &ldquo;Requisitos Obrigatórios&rdquo; de cada vaga.
+              </span>
+            </li>
 
-      <p className="mt-6 text-sm leading-7 text-slate-600">
-        A Semtepi ressalta que critérios referentes a sexo, idade, cor ou
-        situação familiar não podem ser informados na divulgação das vagas,
-        conforme a Constituição Federal e a CLT.
-      </p>
+            <li className="flex gap-3">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+              <span>
+                A vestimenta deve ser adequada. Não é permitido bermudas,
+                shorts, minissaias, camisetas regatas e chinelos.
+              </span>
+            </li>
+          </ul>
+
+          <p className="mt-6 text-sm leading-7 text-slate-600">
+            A Semtepi ressalta que critérios referentes a sexo, idade, cor ou
+            situação familiar não podem ser informados na divulgação das
+            vagas, conforme a Constituição Federal e a CLT.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
