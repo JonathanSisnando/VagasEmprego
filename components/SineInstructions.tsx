@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { siteConfig } from "../config/site";
 
 export function SineInstructions() {
   const [expandido, setExpandido] = useState(false);
@@ -74,6 +76,17 @@ export function SineInstructions() {
                 <span>
                   <strong>{doc}</strong> (originais, sem necessidade de
                   cópias)
+                  {doc === "Currículo atualizado" && (
+                    <>
+                      . Não tem um pronto ou quer aumentar suas chances?{" "}
+                      <Link
+                        href="/adaptar-curriculo"
+                        className="font-bold text-blue-700 underline hover:text-blue-800"
+                      >
+                        A gente adapta o seu por {siteConfig.precoCurriculo}
+                      </Link>
+                    </>
+                  )}
                 </span>
               </li>
             ))}
