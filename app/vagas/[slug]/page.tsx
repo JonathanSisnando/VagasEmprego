@@ -372,16 +372,51 @@ export default async function VagaDetalhePage({
             <h2 className="text-2xl font-black text-slate-950">Requisitos</h2>
 
             <ul className="mt-5 space-y-3">
-              {vaga.requisitos.map((requisito) => (
-                <li
-                  key={requisito}
-                  className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-slate-700"
-                >
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-700" />
-                  <span>{requisito}</span>
-                </li>
-              ))}
+              {vaga.requisitos.filter((r) => !/^atividades?:?\s/i.test(r)).map((requisito) => {
+                const partes = requisito.split(";").map((s) => s.trim()).filter(Boolean);
+
+                return (
+                  <li
+                    key={requisito}
+                    className="rounded-2xl bg-slate-50 p-4 text-slate-700"
+                  >
+                    <ul className="space-y-2">
+                      {partes.map((parte, i) => (
+                        <li key={`${parte}-${i}`} className="flex gap-3">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-700" />
+                          <span className="text-sm leading-7">{parte}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
             </ul>
+
+            {vaga.requisitos.filter((r) => /^atividades?:?\s/i.test(r)).length > 0 && (
+              <>
+                <h3 className="mt-7 text-lg font-black text-slate-950">
+                  Atividades
+                </h3>
+
+                <ul className="mt-4 space-y-3">
+                  {vaga.requisitos.filter((r) => /^atividades?:?\s/i.test(r)).map((item) => {
+                    const texto = item.replace(/^atividades?:?\s*/i, "");
+                    const itens = texto.split(";").map((s) => s.trim()).filter(Boolean);
+
+                    return itens.map((atividade, i) => (
+                      <li
+                        key={`${atividade}-${i}`}
+                        className="flex gap-3 rounded-2xl bg-blue-50 p-4 text-slate-700"
+                      >
+                        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-700" />
+                        <span className="text-sm leading-7">{atividade}</span>
+                      </li>
+                    ));
+                  })}
+                </ul>
+              </>
+            )}
           </article>
 
           {vaga.beneficios.length > 0 && (
@@ -397,7 +432,7 @@ export default async function VagaDetalhePage({
                     className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-slate-700"
                   >
                     <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-600" />
-                    <span>{beneficio}</span>
+                    <span className="text-sm leading-7">{beneficio}</span>
                   </li>
                 ))}
               </ul>
