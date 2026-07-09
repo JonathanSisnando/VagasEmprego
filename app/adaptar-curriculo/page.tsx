@@ -117,6 +117,32 @@ Meu currículo está em anexo.`
             </div>
           </article>
 
+          {vaga && (
+            <article className="rounded-3xl border border-green-200 bg-green-50 p-6 shadow-sm">
+              <h2 className="text-xl font-black text-green-900">
+                Vaga pré-selecionada
+              </h2>
+
+              <p className="mt-4 leading-7 text-green-800">
+                Você veio da vaga <strong>{vaga}</strong>
+                {fonte && <> — {fonte}</>}. Ao clicar no botão do WhatsApp, a
+                mensagem já vai com o nome dessa vaga preenchido. Basta anexar
+                seu currículo e enviar.
+              </p>
+
+              <div className="mt-4 rounded-2xl border border-green-200 bg-white p-4">
+                <p className="text-sm leading-6 text-green-800">
+                  <strong>Mensagem que será enviada:</strong>
+                  <br />
+                  <span className="text-green-700">
+                    &ldquo;Olá! Quero adaptar meu currículo para: {vaga}
+                    {fonte && ` — ${fonte}`}. Meu currículo está em anexo.&rdquo;
+                  </span>
+                </p>
+              </div>
+            </article>
+          )}
+
           <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-2xl font-black text-slate-950">
               Informações necessárias

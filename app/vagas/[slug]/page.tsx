@@ -398,7 +398,7 @@ export default async function VagaDetalhePage({
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-black text-slate-950">
               {ehVagaSine ? "Cadastro presencial" : "Como se candidatar"}
             </h2>
@@ -406,10 +406,15 @@ export default async function VagaDetalhePage({
             <p className="mt-4 leading-7 text-slate-600">
               {ehVagaSine
                 ? "Confira acima os postos, documentos e orientações para se candidatar presencialmente no Sine Manaus."
-                : ehVagaSetemp
-                  ? "Confira acima como funciona a candidatura pelo Portal do Trabalhador."
-                  : "Confira acima como funciona a candidatura para esta vaga."}
+                : vaga.comoSeCandidatar}
             </p>
+
+            <Link
+              href={`/adaptar-curriculo?vaga=${encodeURIComponent(vaga.titulo)}&fonte=${encodeURIComponent(vaga.fonte)}`}
+              className="mt-4 flex w-full items-center justify-center rounded-xl border border-green-300 bg-green-50 px-5 py-3 text-sm font-bold text-green-800 transition hover:bg-green-100"
+            >
+              Adaptar currículo para esta vaga
+            </Link>
 
             <div className="mt-5 flex gap-3 rounded-xl border-l-4 border-amber-500 bg-amber-50 px-4 py-3">
               <AlertTriangle
