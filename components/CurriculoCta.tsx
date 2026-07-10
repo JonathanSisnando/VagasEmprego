@@ -48,12 +48,13 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
         </div>
 
         <h3 className="mt-3 text-lg font-black text-slate-950">
-          Adapte seu currículo pra essa vaga
+          Não tem currículo ou quer adaptar pra essa vaga?
         </h3>
 
         <p className="mt-2 text-sm leading-6 text-slate-700">
-          Envie a vaga e seu currículo e aumente sua chance de ser chamado
-          pra entrevista.
+          Sem currículo, montamos um do zero. Com currículo, adaptamos
+          destacando o que essa vaga pede — aumentando sua chance de ser
+          chamado pra entrevista.
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -61,7 +62,7 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
             <Zap className="size-3" aria-hidden="true" /> Destaque
           </span>
           <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
-            {siteConfig.precoCurriculo}
+            {siteConfig.precoCurriculo} via Pix
           </span>
         </div>
 
@@ -69,7 +70,7 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
           href={href}
           className="mt-4 flex w-full items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
         >
-          Quero adaptar meu currículo
+          Fazer ou adaptar meu currículo
         </Link>
       </div>
     );

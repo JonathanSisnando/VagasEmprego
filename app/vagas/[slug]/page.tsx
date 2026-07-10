@@ -409,13 +409,6 @@ export default async function VagaDetalhePage({
                 : vaga.comoSeCandidatar}
             </p>
 
-            <Link
-              href={`/adaptar-curriculo?vaga=${encodeURIComponent(vaga.titulo)}&fonte=${encodeURIComponent(vaga.fonte)}`}
-              className="mt-4 flex w-full items-center justify-center rounded-xl border border-green-300 bg-green-50 px-5 py-3 text-sm font-bold text-green-800 transition hover:bg-green-100"
-            >
-              Adaptar currículo para esta vaga
-            </Link>
-
             <div className="mt-5 flex gap-3 rounded-xl border-l-4 border-amber-500 bg-amber-50 px-4 py-3">
               <AlertTriangle
                 className="mt-0.5 size-5 shrink-0 text-amber-600"
