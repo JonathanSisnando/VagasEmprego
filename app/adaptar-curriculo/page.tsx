@@ -3,9 +3,9 @@ import Link from "next/link";
 import { siteConfig } from "../../config/site";
 
 export const metadata: Metadata = {
-  title: "Adaptar currículo | Vagas Manaus Hoje",
+  title: "Montar ou adaptar currículo | Vagas Manaus Hoje",
   description:
-    "Envie a vaga de interesse e seu currículo atual para receber uma versão adaptada, destacando o que essa vaga pede.",
+    "Não tem currículo? A gente monta um do zero. Já tem? Adaptamos para destacar o que a vaga de interesse pede.",
 };
 
 type AdaptarCurriculoPageProps = {
@@ -19,16 +19,16 @@ export default async function AdaptarCurriculoPage({
 
   const mensagem = vaga
     ? encodeURIComponent(
-        `Olá! Quero adaptar meu currículo para: ${vaga}${
+        `Olá! Quero montar ou adaptar meu currículo para: ${vaga}${
           fonte ? ` — ${fonte}` : ""
         }.
-Meu currículo está em anexo.`
+Já tenho currículo (anexo) / Não tenho currículo ainda.`
       )
     : encodeURIComponent(
-        `Olá! Quero adaptar meu currículo no site ${siteConfig.nome}.
+        `Olá! Quero montar ou adaptar meu currículo no site ${siteConfig.nome}.
 
 Vaga de interesse (link ou nome/empresa):
-Meu currículo está em anexo.`
+Já tenho currículo (anexo) / Não tenho currículo ainda.`
       );
 
   const linkWhatsApp = `https://wa.me/${siteConfig.whatsapp}?text=${mensagem}`;
@@ -36,7 +36,7 @@ Meu currículo está em anexo.`
   const informacoesNecessarias = [
     "Link ou nome da vaga de interesse",
     "Empresa e cidade da vaga, se souber",
-    "Seu currículo atual (PDF ou Word)",
+    "Seu currículo atual, se já tiver (PDF ou Word)",
     "Áreas de experiência que quer destacar",
     "Alguma preferência de formatação, se tiver",
   ];
@@ -58,13 +58,13 @@ Meu currículo está em anexo.`
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
-              Adaptar currículo
+              Monte ou adapte seu currículo
             </h1>
 
             <p className="mt-5 text-lg leading-8 text-slate-600">
-              Envie a vaga de interesse e seu currículo atual pelo WhatsApp.
-              Devolvemos uma versão adaptada, destacando o que essa vaga
-              específica pede.
+              Não tem currículo ainda? A gente monta um do zero. Já tem um?
+              Enviamos a vaga de interesse pelo WhatsApp e devolvemos uma
+              versão adaptada, destacando o que essa vaga específica pede.
             </p>
 
             <p className="mt-4 inline-flex w-fit items-center rounded-full bg-blue-50 px-4 py-2 text-sm font-black text-blue-700">
@@ -85,22 +85,22 @@ Meu currículo está em anexo.`
               <div className="rounded-2xl bg-slate-50 p-5">
                 <p className="text-3xl font-black text-blue-700">1</p>
                 <h3 className="mt-3 font-black text-slate-950">
-                  Envie a vaga e o currículo
+                  Envie a vaga
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Mande o link da vaga (ou nome e empresa) e seu currículo
-                  atual em PDF ou Word.
+                  Mande o link da vaga (ou nome e empresa). Se já tiver
+                  currículo, anexe em PDF ou Word.
                 </p>
               </div>
 
               <div className="rounded-2xl bg-slate-50 p-5">
                 <p className="text-3xl font-black text-blue-700">2</p>
                 <h3 className="mt-3 font-black text-slate-950">
-                  Adaptamos o conteúdo
+                  Montamos ou adaptamos
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Destacamos as experiências e habilidades que mais combinam
-                  com os requisitos daquela vaga.
+                  Sem currículo, montamos um do zero. Com currículo,
+                  destacamos as experiências que mais combinam com a vaga.
                 </p>
               </div>
 
@@ -126,8 +126,8 @@ Meu currículo está em anexo.`
               <p className="mt-4 leading-7 text-green-800">
                 Você veio da vaga <strong>{vaga}</strong>
                 {fonte && <> — {fonte}</>}. Ao clicar no botão do WhatsApp, a
-                mensagem já vai com o nome dessa vaga preenchido. Basta anexar
-                seu currículo e enviar.
+                mensagem já vai com o nome dessa vaga preenchido. Se já tiver
+                currículo, anexe; se não tiver, é só avisar.
               </p>
 
               <div className="mt-4 rounded-2xl border border-green-200 bg-white p-4">
@@ -135,8 +135,10 @@ Meu currículo está em anexo.`
                   <strong>Mensagem que será enviada:</strong>
                   <br />
                   <span className="text-green-700">
-                    &ldquo;Olá! Quero adaptar meu currículo para: {vaga}
-                    {fonte && ` — ${fonte}`}. Meu currículo está em anexo.&rdquo;
+                    &ldquo;Olá! Quero montar ou adaptar meu currículo para:{" "}
+                    {vaga}
+                    {fonte && ` — ${fonte}`}. Já tenho currículo (anexo) / Não
+                    tenho currículo ainda.&rdquo;
                   </span>
                 </p>
               </div>
@@ -149,8 +151,8 @@ Meu currículo está em anexo.`
             </h2>
 
             <p className="mt-3 leading-7 text-slate-600">
-              Para agilizar a adaptação, envie o máximo possível das
-              informações abaixo.
+              Para agilizar a montagem ou adaptação, envie o máximo possível
+              das informações abaixo.
             </p>
 
             <ul className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -173,9 +175,9 @@ Meu currículo está em anexo.`
 
             <p className="mt-3 leading-7 text-amber-900">
               O Vagas Manaus Hoje é uma central independente de divulgação.
-              Adaptar o currículo não garante contratação nem vínculo com a
-              empresa da vaga. Sempre confira a fonte oficial antes de enviar
-              seus dados ou se candidatar.
+              Montar ou adaptar o currículo não garante contratação nem
+              vínculo com a empresa da vaga. Sempre confira a fonte oficial
+              antes de enviar seus dados ou se candidatar.
             </p>
           </article>
         </div>
@@ -201,7 +203,7 @@ Meu currículo está em anexo.`
               rel="noopener noreferrer"
               className="mt-6 flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-4 text-sm font-black text-white shadow-sm transition hover:bg-green-700"
             >
-              Adaptar meu currículo pelo WhatsApp
+              Montar ou adaptar pelo WhatsApp
             </a>
 
             <div className="mt-6 rounded-2xl bg-slate-50 p-4">
@@ -210,8 +212,8 @@ Meu currículo está em anexo.`
               </p>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Tenha o currículo em mãos (PDF ou Word) e o link ou nome da
-                vaga de interesse.
+                Tenha em mãos o link ou nome da vaga de interesse. Se já
+                tiver currículo (PDF ou Word), separe pra anexar.
               </p>
             </div>
           </div>

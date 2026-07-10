@@ -74,7 +74,7 @@ export function Footer() {
   </Link>
 
   <Link href="/adaptar-curriculo" className="hover:text-blue-700">
-    Adaptar currículo
+    Montar/adaptar currículo
   </Link>
 
   <Link href="/politica-de-privacidade" className="hover:text-blue-700">

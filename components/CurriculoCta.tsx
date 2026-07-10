@@ -28,9 +28,9 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
   if (variant === "inline") {
     return (
       <p className="text-sm text-slate-600">
-        Precisa de ajuda com seu currículo?{" "}
+        Não tem currículo ou quer adaptar o seu para uma vaga específica?{" "}
         <Link href={href} className="font-bold text-blue-700 hover:underline">
-          Saiba como adaptar o seu
+          Monte ou adapte o seu por {siteConfig.precoCurriculo}
         </Link>
         .
       </p>
