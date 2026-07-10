@@ -48,7 +48,7 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
         </div>
 
         <h3 className="mt-3 text-lg font-black text-slate-950">
-          Não tem currículo ou quer adaptar pra essa vaga?
+          Criamos ou adaptamos seu currículo para essa vaga
         </h3>
 
         <p className="mt-2 text-sm leading-6 text-slate-700">
@@ -70,8 +70,12 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
           href={href}
           className="mt-4 flex w-full items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
         >
-          Fazer ou adaptar meu currículo
+          Quero o meu currículo
         </Link>
+
+        <p className="mt-2 text-center text-xs font-bold text-blue-700">
+          👉 Clique e fale com a gente pelo WhatsApp
+        </p>
       </div>
     );
   }
