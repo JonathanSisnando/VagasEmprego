@@ -91,6 +91,7 @@ export async function buscarListaDeVagasSetemp(): Promise<VagaSetempResumo[]> {
   const resposta = await fetch(`${BASE_URL}/jobs`, {
     headers: { "User-Agent": USER_AGENT },
     next: { revalidate: 60 * 60 },
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!resposta.ok) {
@@ -129,6 +130,7 @@ export async function buscarDetalheDeVagaSetemp(slugOdoo: string) {
   const resposta = await fetch(`${BASE_URL}/jobs/detail/${slugOdoo}`, {
     headers: { "User-Agent": USER_AGENT },
     next: { revalidate: 60 * 60 },
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!resposta.ok) {

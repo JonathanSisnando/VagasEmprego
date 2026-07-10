@@ -55,6 +55,7 @@ export async function buscarNoticiaSine(slug: string): Promise<WordpressPost | n
     next: {
       revalidate: 60 * 60,
     },
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!resposta.ok) {
@@ -78,6 +79,7 @@ export async function buscarNoticiaSineMaisRecente(): Promise<WordpressPost | nu
     next: {
       revalidate: 60 * 60,
     },
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!resposta.ok) {

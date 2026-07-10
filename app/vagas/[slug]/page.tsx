@@ -522,19 +522,29 @@ async function buscarVagaPorSlug(slug: string) {
     return vagaLocal;
   }
 
-  const postSine = await buscarNoticiaSineMaisRecente();
+  try {
+    const postSine = await buscarNoticiaSineMaisRecente();
 
-  if (postSine) {
-    const vagasSine = extrairVagasDoPost(postSine);
-    const vagaSine = vagasSine.find((vaga) => vaga.slug === slug);
+    if (postSine) {
+      const vagasSine = extrairVagasDoPost(postSine);
+      const vagaSine = vagasSine.find((vaga) => vaga.slug === slug);
 
-    if (vagaSine) {
-      return vagaSine;
+      if (vagaSine) {
+        return vagaSine;
+      }
     }
+  } catch (error) {
+    console.error(`Erro ao buscar vaga "${slug}" no Sine Manaus`, error);
   }
 
-  const vagasSetemp = await buscarVagasSetemp();
+  try {
+    const vagasSetemp = await buscarVagasSetemp();
 
-  return vagasSetemp.find((vaga) => vaga.slug === slug) ?? null;
+    return vagasSetemp.find((vaga) => vaga.slug === slug) ?? null;
+  } catch (error) {
+    console.error(`Erro ao buscar vaga "${slug}" no SETEMP`, error);
+
+    return null;
+  }
 }
 
