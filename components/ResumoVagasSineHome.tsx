@@ -80,44 +80,21 @@ export function ResumoVagasSineHome() {
         Consulte as oportunidades disponíveis hoje
       </h2>
 
-      <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-        <p className="text-sm leading-6 text-slate-600">
-          {carregando && (
-            <>
-              Carregando vagas do Sine Manaus e exibindo{" "}
-              <span className="font-black text-slate-950">
-                {totalCadastradas}
-              </span>{" "}
-              vagas cadastradas na plataforma.
-            </>
-          )}
+      <div className="mt-5 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+        <span className="text-3xl font-black text-blue-700">
+          {carregando ? "…" : erro ? totalCadastradas : totalOficial}
+        </span>
 
-          {erro && (
-            <>
-              Não foi possível contar as vagas do Sine Manaus no momento.
-              Exibindo{" "}
-              <span className="font-black text-slate-950">
-                {totalCadastradas}
-              </span>{" "}
-              vagas cadastradas na plataforma.
-            </>
-          )}
+        <p className="text-sm leading-6 text-slate-600">
+          {carregando && "Carregando vagas disponíveis em Manaus..."}
+
+          {erro &&
+            "Não foi possível carregar o total do Sine Manaus agora. Vagas cadastradas na plataforma."}
 
           {!carregando && !erro && (
             <>
-              Exibindo{" "}
-              <span className="font-black text-slate-950">
-                {totalCargos}
-              </span>{" "}
-              cargos do Sine Manaus,{" "}
-              <span className="font-black text-slate-950">
-                {totalOficial}
-              </span>{" "}
-              vagas oficiais divulgadas e{" "}
-              <span className="font-black text-slate-950">
-                {totalCadastradas}
-              </span>{" "}
-              vagas cadastradas na plataforma.
+              vagas oficiais divulgadas pelo Sine Manaus hoje
+              {totalCargos > 0 && `, em ${totalCargos} cargos diferentes`}.
             </>
           )}
         </p>

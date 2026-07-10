@@ -30,7 +30,6 @@ export function VagasClient() {
     carregando,
     erroSine,
     erroSetemp,
-    totalCadastradas,
     sine,
     setemp,
   } = useVagasUnificadas();
@@ -149,6 +148,17 @@ export function VagasClient() {
             tudo numa busca só.
           </p>
 
+          <div className="mt-5">
+            <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-5 py-2.5">
+              <span className="text-2xl font-black text-blue-700">
+                {carregando ? "…" : todasVagas.length}
+              </span>
+              <span className="text-sm font-bold text-blue-700">
+                vagas disponíveis agora
+              </span>
+            </span>
+          </div>
+
           <div className="mt-4">
             <CurriculoCta variant="inline" />
           </div>
@@ -170,130 +180,75 @@ export function VagasClient() {
             </p>
           </div>
 
-          <div className="mt-5">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5">
-              <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-                Resumo geral
-              </p>
-
-              <div className="mt-3 space-y-2 text-sm text-slate-700">
-                {!erroSine && (
-                  <p>
-                    <span className="font-black text-slate-950">
-                      Sine Manaus:
-                    </span>{" "}
-                    {sine.totalOficial} vagas oficiais, {sine.totalCargos}{" "}
-                    cargos
-                  </p>
-                )}
-
-                {!erroSetemp && (
-                  <p>
-                    <span className="font-black text-slate-950">
-                      SETEMP:
-                    </span>{" "}
-                    {setemp.totalOficial} vagas
-                  </p>
-                )}
-
-                <p>
-                  <span className="font-black text-slate-950">
-                    Cadastradas na plataforma:
-                  </span>{" "}
-                  {totalCadastradas}
-                </p>
-
-                {sine.post && (
-                  <p>
-                    <span className="font-black text-slate-950">
-                      Última atualização do Sine:
-                    </span>{" "}
-                    {formatarData(sine.post.dataPublicacao)}
-                  </p>
-                )}
-              </div>
-
-              {sine.post?.link && (
+          <p className="mt-4 text-xs font-semibold text-slate-500">
+            Fontes:{" "}
+            {!erroSine && `Sine Manaus (${sine.totalOficial} vagas oficiais)`}
+            {!erroSine && !erroSetemp && " · "}
+            {!erroSetemp && `SETEMP (${setemp.totalOficial} vagas)`}
+            {sine.post &&
+              ` · atualizado em ${formatarData(sine.post.dataPublicacao)}`}
+            {sine.post?.link && (
+              <>
+                {" "}
+                ·{" "}
                 <a
                   href={sine.post.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex w-fit items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                  className="font-bold text-blue-700 hover:underline"
                 >
                   Ver notícia oficial
                 </a>
-              )}
-            </div>
-          </div>
+              </>
+            )}
+          </p>
         </section>
       )}
 
       <section className="mx-auto max-w-6xl px-4 py-8">
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-black uppercase tracking-wide text-blue-700">
-            Resumo das vagas
-          </p>
-
-          <h2 className="mt-1 text-2xl font-black text-slate-950">
-            Consulte as oportunidades disponíveis hoje
-          </h2>
-
-          <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-sm leading-6 text-slate-600">
-              {carregando ? (
-                <>
-                  Carregando vagas do Sine Manaus e do SETEMP e exibindo{" "}
-                  <span className="font-black text-slate-950">
-                    {totalCadastradas}
-                  </span>{" "}
-                  vagas cadastradas na plataforma.
-                </>
-              ) : (
-                <>
-                  Exibindo{" "}
-                  <span className="font-black text-slate-950">
-                    {todasVagas.length}
-                  </span>{" "}
-                  cargos no total.
-                </>
-              )}
+        {(carregando || destaques.length > 0) && (
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm font-black uppercase tracking-wide text-blue-700">
+              Vagas em destaque
             </p>
+
+            <h2 className="mt-1 text-2xl font-black text-slate-950">
+              Cargos com mais oportunidades abertas
+            </h2>
+
+            {carregando ? (
+              <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                <p className="text-sm font-semibold text-slate-600">
+                  Carregando vagas em destaque...
+                </p>
+              </div>
+            ) : (
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {destaques.map((destaque) => (
+                  <button
+                    key={destaque.id}
+                    type="button"
+                    onClick={() => selecionarDestaque(destaque)}
+                    className="rounded-2xl border border-blue-100 bg-blue-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-100"
+                  >
+                    <p className="text-sm font-black leading-5 text-slate-950">
+                      {destaque.titulo}
+                    </p>
+
+                    <p className="mt-2 text-sm font-bold text-blue-700">
+                      {destaque.quantidadeVagas} vaga
+                      {destaque.quantidadeVagas > 1 ? "s" : ""}
+                    </p>
+
+                    <p className="mt-3 text-xs font-black uppercase tracking-wide text-slate-500">
+                      Ver cards dessa vaga
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-
-          {carregando && (
-            <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4">
-              <p className="text-sm font-semibold text-slate-600">
-                Carregando vagas em destaque...
-              </p>
-            </div>
-          )}
-
-          {!carregando && destaques.length > 0 && (
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
-              {destaques.map((destaque) => (
-                <button
-                  key={destaque.id}
-                  type="button"
-                  onClick={() => selecionarDestaque(destaque)}
-                  className="rounded-2xl border border-blue-100 bg-blue-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-100"
-                >
-                  <p className="text-sm font-black leading-5 text-slate-950">
-                    {destaque.titulo}
-                  </p>
-
-                  <p className="mt-2 text-sm font-bold text-blue-700">
-                    {destaque.quantidadeVagas} vaga
-                    {destaque.quantidadeVagas > 1 ? "s" : ""}
-                  </p>
-
-                  <p className="mt-3 text-xs font-black uppercase tracking-wide text-slate-500">
-                    Ver cards dessa vaga
-                  </p>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        )}
 
         <section className="mt-10">
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
