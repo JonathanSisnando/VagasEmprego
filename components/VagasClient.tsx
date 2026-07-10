@@ -44,12 +44,8 @@ export function VagasClient() {
     return Array.from(new Set(todasVagas.map((vaga) => vaga.categoria))).sort();
   }, [todasVagas]);
 
-  const filtros = useMemo(() => {
-    const categoriasSemRepeticao = categorias.filter(
-      (categoria) => !filtrosRapidos.includes(categoria)
-    );
-
-    return [...filtrosRapidos, ...categoriasSemRepeticao];
+  const outrasCategorias = useMemo(() => {
+    return categorias.filter((categoria) => !filtrosRapidos.includes(categoria));
   }, [categorias]);
 
   const bairros = useMemo(() => {
@@ -286,8 +282,8 @@ export function VagasClient() {
                   Filtrar vagas
                 </p>
 
-                <div className="flex flex-wrap gap-3">
-                  {filtros.map((filtro) => {
+                <div className="flex flex-wrap items-center gap-3">
+                  {filtrosRapidos.map((filtro) => {
                     const estaSelecionado = filtroSelecionado === filtro;
 
                     return (
@@ -308,6 +304,33 @@ export function VagasClient() {
                       </button>
                     );
                   })}
+
+                  {outrasCategorias.length > 0 && (
+                    <select
+                      value={
+                        outrasCategorias.includes(filtroSelecionado)
+                          ? filtroSelecionado
+                          : ""
+                      }
+                      onChange={(event) => {
+                        const valor = event.target.value;
+                        setFiltroSelecionado(valor === "" ? "Todas" : valor);
+                        setQuantidadeVisivel(12);
+                      }}
+                      className={`rounded-full border px-5 py-3 text-sm font-bold outline-none transition ${
+                        outrasCategorias.includes(filtroSelecionado)
+                          ? "border-blue-700 bg-blue-700 text-white shadow-sm"
+                          : "border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                      }`}
+                    >
+                      <option value="">Outras categorias</option>
+                      {outrasCategorias.map((categoria) => (
+                        <option key={categoria} value={categoria}>
+                          {categoria}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
 
