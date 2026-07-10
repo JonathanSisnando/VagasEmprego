@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { FileText, Sparkles, Zap } from "lucide-react";
 import { siteConfig } from "../config/site";
+import { TrackedNavLink } from "./TrackedNavLink";
 
 type CurriculoCtaProps = {
   variant?: "banner" | "sidebar" | "inline";
@@ -29,9 +29,14 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
     return (
       <p className="text-sm text-slate-600">
         Não tem currículo ou quer adaptar o seu para uma vaga específica?{" "}
-        <Link href={href} className="font-bold text-blue-700 hover:underline">
+        <TrackedNavLink
+          href={href}
+          evento="click_curriculo_cta"
+          propriedades={{ variante: "inline", vaga: vaga ?? "" }}
+          className="font-bold text-blue-700 hover:underline"
+        >
           Monte ou adapte o seu por {siteConfig.precoCurriculo}
-        </Link>
+        </TrackedNavLink>
         .
       </p>
     );
@@ -66,12 +71,14 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
           </span>
         </div>
 
-        <Link
+        <TrackedNavLink
           href={href}
+          evento="click_curriculo_cta"
+          propriedades={{ variante: "sidebar", vaga: vaga ?? "" }}
           className="mt-4 flex w-full items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
         >
           Quero o meu currículo
-        </Link>
+        </TrackedNavLink>
 
         <p className="mt-2 text-center text-xs font-bold text-blue-700">
           👉 Clique e fale com a gente pelo WhatsApp
@@ -107,12 +114,14 @@ export function CurriculoCta({ variant = "banner", vaga, fonte }: CurriculoCtaPr
       </div>
 
       <div className="flex w-full shrink-0 flex-col items-center gap-2 sm:w-auto">
-        <Link
+        <TrackedNavLink
           href={href}
+          evento="click_curriculo_cta"
+          propriedades={{ variante: "banner", vaga: vaga ?? "" }}
           className="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-700 to-blue-600 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:from-blue-800 hover:to-blue-700 sm:w-auto"
         >
           Adaptar meu currículo
-        </Link>
+        </TrackedNavLink>
 
         <p className="text-xs font-bold text-blue-700">
           {siteConfig.precoCurriculo} via Pix

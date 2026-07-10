@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "../../config/site";
+import { TrackedActionLink } from "../../components/TrackedActionLink";
 
 export const metadata: Metadata = {
   title: "Contato | Vagas Manaus Hoje",
@@ -167,21 +168,23 @@ const linkWhatsApp = `https://wa.me/${siteConfig.whatsapp}?text=${mensagem}`;
             </p>
 
             <div className="mt-6 space-y-3">
-              <a
+              <TrackedActionLink
                 href={linkWhatsApp}
                 target="_blank"
                 rel="noopener noreferrer"
+                evento="click_contato_whatsapp"
                 className="flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-4 text-sm font-black text-white shadow-sm transition hover:bg-green-700"
               >
                 Falar pelo WhatsApp
-              </a>
+              </TrackedActionLink>
 
-              <a
+              <TrackedActionLink
                 href={`mailto:${siteConfig.email}`}
+                evento="click_contato_email"
                 className="flex w-full items-center justify-center rounded-xl bg-blue-700 px-5 py-4 text-sm font-black text-white shadow-sm transition hover:bg-blue-800"
               >
                 Enviar e-mail
-              </a>
+              </TrackedActionLink>
             </div>
 
             <div className="mt-6 rounded-2xl bg-slate-50 p-4">

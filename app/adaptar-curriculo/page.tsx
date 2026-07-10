@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "../../config/site";
+import { TrackedActionLink } from "../../components/TrackedActionLink";
 
 export const metadata: Metadata = {
   title: "Montar ou adaptar currículo | Vagas Manaus Hoje",
@@ -197,14 +198,16 @@ Já tenho currículo (anexo) / Não tenho currículo ainda.`
               Valor: {siteConfig.precoCurriculo}, pago via Pix
             </p>
 
-            <a
+            <TrackedActionLink
               href={linkWhatsApp}
               target="_blank"
               rel="noopener noreferrer"
+              evento="click_montar_adaptar_whatsapp"
+              propriedades={{ vagaPreSelecionada: Boolean(vaga) }}
               className="mt-6 flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-4 text-sm font-black text-white shadow-sm transition hover:bg-green-700"
             >
               Montar ou adaptar pelo WhatsApp
-            </a>
+            </TrackedActionLink>
 
             <div className="mt-6 rounded-2xl bg-slate-50 p-4">
               <p className="text-sm font-black text-slate-900">

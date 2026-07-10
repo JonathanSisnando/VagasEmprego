@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { siteConfig } from "../config/site";
+import { TrackedActionLink } from "./TrackedActionLink";
 
 export function Footer() {
   const mensagem = encodeURIComponent(
@@ -25,15 +26,16 @@ export function Footer() {
             </div>
           </div>
 
-          <a
+          <TrackedActionLink
             href={`https://wa.me/${siteConfig.whatsapp}?text=${mensagem}`}
             target="_blank"
             rel="noopener noreferrer"
+            evento="click_enviar_vaga_footer"
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-green-700 sm:w-auto"
           >
             <MessageCircle className="size-4" aria-hidden="true" />
             Falar no WhatsApp
-          </a>
+          </TrackedActionLink>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">

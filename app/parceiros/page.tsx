@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MessageCircle, Megaphone } from "lucide-react";
 import { siteConfig } from "../../config/site";
 import { parceiros } from "../../data/parceiros";
+import { TrackedActionLink } from "../../components/TrackedActionLink";
 
 export const metadata: Metadata = {
   title: "Parceiros | Vagas Manaus Hoje",
@@ -186,14 +187,15 @@ export default function ParceirosPage() {
               pelo botão abaixo e a gente combina a parceria.
             </p>
 
-            <a
+            <TrackedActionLink
               href={linkWhatsApp}
               target="_blank"
               rel="noopener noreferrer"
+              evento="click_parceria_whatsapp"
               className="mt-6 flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-4 text-sm font-black text-white shadow-sm transition hover:bg-green-700"
             >
               Propor parceria pelo WhatsApp
-            </a>
+            </TrackedActionLink>
 
             <div className="mt-6 rounded-2xl bg-slate-50 p-4">
               <p className="text-sm font-black text-slate-900">
