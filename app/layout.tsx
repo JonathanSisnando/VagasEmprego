@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 import { Header } from "../components/Header";
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   publisher: siteConfig.nome,
 
   verification: {
-    google: "iE-ZmRojllKsF1ADEthVmy8HLQYxzelenD-lQDnQxk8",
+    google: "WM3OPapFJe5xi4XlDz4H3i6hQ-KPmAEUK9piDowmkZM",
   },
 
   robots: {
@@ -69,6 +70,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <WhatsAppButton />
+        <Analytics />
       </body>
     </html>
   );
