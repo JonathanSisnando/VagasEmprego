@@ -9,38 +9,214 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VagasRouteImport } from './routes/vagas'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
+import { Route as ParceirosRouteImport } from './routes/parceiros'
+import { Route as EnviarVagaRouteImport } from './routes/enviar-vaga'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as AdaptarCurriculoRouteImport } from './routes/adaptar-curriculo'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VagasSlugRouteImport } from './routes/vagas.$slug'
 
+const VagasRoute = VagasRouteImport.update({
+  id: '/vagas',
+  path: '/vagas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
+  id: '/politica-de-privacidade',
+  path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParceirosRoute = ParceirosRouteImport.update({
+  id: '/parceiros',
+  path: '/parceiros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnviarVagaRoute = EnviarVagaRouteImport.update({
+  id: '/enviar-vaga',
+  path: '/enviar-vaga',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdaptarCurriculoRoute = AdaptarCurriculoRouteImport.update({
+  id: '/adaptar-curriculo',
+  path: '/adaptar-curriculo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VagasSlugRoute = VagasSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => VagasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/adaptar-curriculo': typeof AdaptarCurriculoRoute
+  '/contato': typeof ContatoRoute
+  '/enviar-vaga': typeof EnviarVagaRoute
+  '/parceiros': typeof ParceirosRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
+  '/vagas': typeof VagasRouteWithChildren
+  '/vagas/$slug': typeof VagasSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adaptar-curriculo': typeof AdaptarCurriculoRoute
+  '/contato': typeof ContatoRoute
+  '/enviar-vaga': typeof EnviarVagaRoute
+  '/parceiros': typeof ParceirosRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
+  '/vagas': typeof VagasRouteWithChildren
+  '/vagas/$slug': typeof VagasSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/adaptar-curriculo': typeof AdaptarCurriculoRoute
+  '/contato': typeof ContatoRoute
+  '/enviar-vaga': typeof EnviarVagaRoute
+  '/parceiros': typeof ParceirosRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
+  '/vagas': typeof VagasRouteWithChildren
+  '/vagas/$slug': typeof VagasSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/adaptar-curriculo'
+    | '/contato'
+    | '/enviar-vaga'
+    | '/parceiros'
+    | '/politica-de-privacidade'
+    | '/sitemap.xml'
+    | '/sobre'
+    | '/vagas'
+    | '/vagas/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/adaptar-curriculo'
+    | '/contato'
+    | '/enviar-vaga'
+    | '/parceiros'
+    | '/politica-de-privacidade'
+    | '/sitemap.xml'
+    | '/sobre'
+    | '/vagas'
+    | '/vagas/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/adaptar-curriculo'
+    | '/contato'
+    | '/enviar-vaga'
+    | '/parceiros'
+    | '/politica-de-privacidade'
+    | '/sitemap.xml'
+    | '/sobre'
+    | '/vagas'
+    | '/vagas/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdaptarCurriculoRoute: typeof AdaptarCurriculoRoute
+  ContatoRoute: typeof ContatoRoute
+  EnviarVagaRoute: typeof EnviarVagaRoute
+  ParceirosRoute: typeof ParceirosRoute
+  PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SobreRoute: typeof SobreRoute
+  VagasRoute: typeof VagasRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vagas': {
+      id: '/vagas'
+      path: '/vagas'
+      fullPath: '/vagas'
+      preLoaderRoute: typeof VagasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politica-de-privacidade': {
+      id: '/politica-de-privacidade'
+      path: '/politica-de-privacidade'
+      fullPath: '/politica-de-privacidade'
+      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parceiros': {
+      id: '/parceiros'
+      path: '/parceiros'
+      fullPath: '/parceiros'
+      preLoaderRoute: typeof ParceirosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enviar-vaga': {
+      id: '/enviar-vaga'
+      path: '/enviar-vaga'
+      fullPath: '/enviar-vaga'
+      preLoaderRoute: typeof EnviarVagaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adaptar-curriculo': {
+      id: '/adaptar-curriculo'
+      path: '/adaptar-curriculo'
+      fullPath: '/adaptar-curriculo'
+      preLoaderRoute: typeof AdaptarCurriculoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +224,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vagas/$slug': {
+      id: '/vagas/$slug'
+      path: '/$slug'
+      fullPath: '/vagas/$slug'
+      preLoaderRoute: typeof VagasSlugRouteImport
+      parentRoute: typeof VagasRoute
+    }
   }
 }
 
+interface VagasRouteChildren {
+  VagasSlugRoute: typeof VagasSlugRoute
+}
+
+const VagasRouteChildren: VagasRouteChildren = {
+  VagasSlugRoute: VagasSlugRoute,
+}
+
+const VagasRouteWithChildren = VagasRoute._addFileChildren(VagasRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdaptarCurriculoRoute: AdaptarCurriculoRoute,
+  ContatoRoute: ContatoRoute,
+  EnviarVagaRoute: EnviarVagaRoute,
+  ParceirosRoute: ParceirosRoute,
+  PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SobreRoute: SobreRoute,
+  VagasRoute: VagasRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
