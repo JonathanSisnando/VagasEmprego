@@ -12,10 +12,10 @@ export function FiltrosVagas({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between px-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">
           Filtros rápidos
         </p>
-        <p className="text-xs font-medium text-muted-foreground">
+        <p className="text-[10px] font-medium text-muted-foreground font-mono">
           {total} {total === 1 ? "vaga" : "vagas"}
         </p>
       </div>
@@ -28,9 +28,9 @@ export function FiltrosVagas({
               type="button"
               onClick={() => onChange(f)}
               className={
-                "shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition-colors " +
+                "shrink-0 rounded-sm border px-3 py-1.5 text-xs font-semibold transition-colors font-mono " +
                 (on
-                  ? "border-primary bg-primary text-primary-foreground"
+                  ? "border-slate-800 bg-slate-800 text-white"
                   : "border-black/10 bg-white text-foreground hover:border-primary/30")
               }
             >
