@@ -1,5 +1,19 @@
 import type { Vaga } from "@/lib/vagas-types";
 
+export function isFromSine(v: Vaga) {
+  return v.fonte.toLowerCase().includes("sine");
+}
+
+export function isFromSetemp(v: Vaga) {
+  return v.fonte.toLowerCase().includes("setemp") || v.fonte.toLowerCase().includes("portal do trabalhador");
+}
+
+export function fonteCurta(v: Vaga): string {
+  if (isFromSine(v)) return "Sine";
+  if (isFromSetemp(v)) return "Setemp";
+  return v.fonte;
+}
+
 export function VagaBadges({ vaga }: { vaga: Vaga }) {
   const semExperiencia = /não|nao|sem/i.test(vaga.experiencia);
   const ensinoMedio = /médio|medio/i.test(vaga.escolaridade);
