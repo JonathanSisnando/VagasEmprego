@@ -18,6 +18,7 @@ import { Route as EnviarVagaRouteImport } from './routes/enviar-vaga'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AdaptarCurriculoRouteImport } from './routes/adaptar-curriculo'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VagasIndexRouteImport } from './routes/vagas.index'
 import { Route as VagasSlugRouteImport } from './routes/vagas.$slug'
 
 const VagasRoute = VagasRouteImport.update({
@@ -65,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VagasIndexRoute = VagasIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VagasRoute,
+} as any)
 const VagasSlugRoute = VagasSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/vagas': typeof VagasRouteWithChildren
   '/vagas/$slug': typeof VagasSlugRoute
+  '/vagas/': typeof VagasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,8 +99,8 @@ export interface FileRoutesByTo {
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
-  '/vagas': typeof VagasRouteWithChildren
   '/vagas/$slug': typeof VagasSlugRoute
+  '/vagas': typeof VagasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +114,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/vagas': typeof VagasRouteWithChildren
   '/vagas/$slug': typeof VagasSlugRoute
+  '/vagas/': typeof VagasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +129,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/vagas'
     | '/vagas/$slug'
+    | '/vagas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,8 +140,8 @@ export interface FileRouteTypes {
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
-    | '/vagas'
     | '/vagas/$slug'
+    | '/vagas'
   id:
     | '__root__'
     | '/'
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/vagas'
     | '/vagas/$slug'
+    | '/vagas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vagas/': {
+      id: '/vagas/'
+      path: '/'
+      fullPath: '/vagas/'
+      preLoaderRoute: typeof VagasIndexRouteImport
+      parentRoute: typeof VagasRoute
+    }
     '/vagas/$slug': {
       id: '/vagas/$slug'
       path: '/$slug'
@@ -236,10 +253,12 @@ declare module '@tanstack/react-router' {
 
 interface VagasRouteChildren {
   VagasSlugRoute: typeof VagasSlugRoute
+  VagasIndexRoute: typeof VagasIndexRoute
 }
 
 const VagasRouteChildren: VagasRouteChildren = {
   VagasSlugRoute: VagasSlugRoute,
+  VagasIndexRoute: VagasIndexRoute,
 }
 
 const VagasRouteWithChildren = VagasRoute._addFileChildren(VagasRouteChildren)
@@ -258,3 +277,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
