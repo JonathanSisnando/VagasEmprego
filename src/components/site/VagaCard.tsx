@@ -2,21 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import type { Vaga } from "@/lib/vagas-types";
 
-import { VagaBadges } from "./VagaBadges";
-
-function isFromSine(v: Vaga) {
-  return v.fonte.toLowerCase().includes("sine");
-}
-
-function isFromSetemp(v: Vaga) {
-  return v.fonte.toLowerCase().includes("setemp") || v.fonte.toLowerCase().includes("portal do trabalhador");
-}
-
-function fonteCurta(v: Vaga): string {
-  if (isFromSine(v)) return "Sine";
-  if (isFromSetemp(v)) return "Setemp";
-  return v.fonte;
-}
+import { fonteCurta, isFromSetemp, isFromSine, VagaBadges } from "./VagaBadges";
 
 function tempoRelativo(data: string): string {
   const hoje = new Date();
