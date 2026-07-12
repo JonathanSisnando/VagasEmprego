@@ -71,7 +71,7 @@
   --color-sine-foreground: var(--sine-foreground);
   --color-setemp: var(--setemp);
   --color-setemp-foreground: var(--setemp-foreground);
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 

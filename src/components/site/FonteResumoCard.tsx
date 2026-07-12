@@ -13,40 +13,40 @@ export function FonteResumoCard({
 }) {
   if (loading) {
     return (
-      <div className="rounded-2xl border border-black/5 bg-slate-50 p-4">
-        <p className="mb-1 font-mono text-[10px] uppercase text-slate-500">{titulo}</p>
-        <div className="h-7 w-16 animate-pulse rounded bg-slate-200" />
-        <div className="mt-2 h-3 w-24 animate-pulse rounded bg-slate-200" />
+      <div className="border border-black/5 bg-white p-3 rounded-sm">
+        <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground font-mono">{titulo}</p>
+        <div className="h-7 w-16 animate-pulse rounded bg-slate-100" />
+        <div className="mt-2 h-1 w-full bg-slate-100" />
       </div>
     );
   }
   if (erro || !resumo) {
     return (
-      <div className="rounded-2xl border border-alert/30 bg-alert/5 p-4">
-        <p className="mb-1 font-mono text-[10px] uppercase text-alert">{titulo}</p>
+      <div className="border border-alert/30 bg-alert/5 p-3 rounded-sm">
+        <p className="mb-1 text-[10px] font-bold uppercase text-alert font-mono">{titulo}</p>
         <p className="text-sm font-bold text-alert">Falha ao carregar</p>
-        <p className="mt-1 text-[11px] text-alert/80">Tente novamente em instantes.</p>
+        <div className="mt-2 h-1 w-full bg-alert/20" />
       </div>
     );
   }
   const declarado = resumo.totalDeclarado;
   const importado = resumo.totalImportado;
-  const divergencia =
-    declarado !== null && declarado !== importado ? declarado - importado : 0;
+  const percentual = declarado && declarado > 0 ? Math.min(100, Math.round((importado / declarado) * 100)) : 100;
+
   return (
-    <div className="rounded-2xl border border-black/5 bg-slate-50 p-4">
-      <p className="mb-1 font-mono text-[10px] uppercase text-slate-500">{titulo}</p>
-      <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-black">{importado}</span>
-        <span className="text-xs text-slate-400">vagas importadas</span>
-      </div>
-      <p className="mt-2 text-[11px] italic text-slate-500">
-        {declarado !== null
-          ? divergencia > 0
-            ? `Boletim oficial declara ${declarado} · ${divergencia} sem dados estruturados`
-            : `Total confere com boletim oficial (${declarado})`
-          : "Total oficial não informado"}
+    <div className="border border-black/5 bg-white p-3 rounded-sm">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">
+        Fonte: {titulo}
       </p>
+      <p className="mt-1 text-2xl font-bold text-foreground font-mono">
+        {importado}
+      </p>
+      <div className="mt-2 h-1 w-full bg-[#e8ecf1]">
+        <div
+          className="h-1 bg-primary"
+          style={{ width: `${percentual}%` }}
+        />
+      </div>
     </div>
   );
 }

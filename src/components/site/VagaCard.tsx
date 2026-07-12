@@ -1,73 +1,68 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin } from "lucide-react";
 
 import type { Vaga } from "@/lib/vagas-types";
 
-import { VagaBadges } from "./VagaBadges";
+import { fonteCurta, isFromSetemp, isFromSine, VagaBadges } from "./VagaBadges";
+
+function tempoRelativo(data: string): string {
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const d = new Date(data);
+  d.setHours(0, 0, 0, 0);
+  const diff = Math.round((hoje.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+  if (diff <= 0) return "Hoje";
+  if (diff === 1) return "Ontem";
+  if (diff < 7) return `Há ${diff} dias`;
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+}
 
 export function VagaCard({ vaga }: { vaga: Vaga }) {
-  return (
-    <article className="animate-slide-up rounded-3xl border border-black/5 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
-      <VagaBadges vaga={vaga} />
+  const sine = isFromSine(vaga);
+  const setemp = isFromSetemp(vaga);
+  const borda = sine ? "border-l-primary" : setemp ? "border-l-slate-300" : "border-l-slate-300";
 
-      <h3 className="mt-3 text-lg font-extrabold leading-tight text-foreground">
+  return (
+    <Link
+      to="/vagas/$slug"
+      params={{ slug: vaga.slug }}
+      className={`animate-slide-up block border-y border-r border-black/5 bg-white p-4 transition-colors hover:bg-[#fafbfc] active:bg-[#f1f5f9] border-l-4 ${borda}`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${sine ? "text-primary" : "text-muted-foreground"}`}>
+          {fonteCurta(vaga)}
+        </span>
+        <span className="text-[10px] font-mono text-muted-foreground">
+          {tempoRelativo(vaga.dataPublicacao)}
+        </span>
+      </div>
+
+      <h3 className="mt-1 text-base font-semibold leading-tight text-foreground">
         {vaga.titulo}
       </h3>
-      <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-        <MapPin className="size-3.5" aria-hidden />
-        {vaga.bairro && vaga.bairro !== "Não informado"
-          ? `${vaga.bairro} · ${vaga.cidade}, ${vaga.estado}`
-          : `${vaga.cidade}, ${vaga.estado}`}
+      <p className="mt-1 text-xs text-muted-foreground">
+        {vaga.empresa} • {vaga.bairro && vaga.bairro !== "Não informado" ? vaga.bairro : `${vaga.cidade}, ${vaga.estado}`}
       </p>
 
-      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-[13px]">
-        <div className="flex flex-col">
-          <dt className="text-[11px] text-slate-400">Escolaridade</dt>
-          <dd className="font-medium">{vaga.escolaridade}</dd>
-        </div>
-        <div className="flex flex-col">
-          <dt className="text-[11px] text-slate-400">Experiência</dt>
-          <dd className="font-medium">{vaga.experiencia}</dd>
-        </div>
-        {vaga.salario && vaga.salario !== "Não informado" ? (
-          <div className="flex flex-col">
-            <dt className="text-[11px] text-slate-400">Salário</dt>
-            <dd className="font-medium">{vaga.salario}</dd>
-          </div>
-        ) : null}
-        {vaga.modalidade ? (
-          <div className="flex flex-col">
-            <dt className="text-[11px] text-slate-400">Modalidade</dt>
-            <dd className="font-medium">{vaga.modalidade}</dd>
-          </div>
-        ) : null}
-      </dl>
-
-      <Link
-        to="/vagas/$slug"
-        params={{ slug: vaga.slug }}
-        className="mt-5 flex h-11 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-foreground transition-colors hover:bg-slate-200"
-      >
-        Ver detalhes e candidatar
-      </Link>
-    </article>
+      <div className="mt-3">
+        <VagaBadges vaga={vaga} />
+      </div>
+    </Link>
   );
 }
 
 export function VagaCardSkeleton() {
   return (
-    <div className="rounded-3xl border border-black/5 bg-white p-5">
-      <div className="flex gap-1.5">
-        <div className="h-4 w-16 rounded bg-slate-100" />
-        <div className="h-4 w-14 rounded bg-slate-100" />
+    <div className="border-y border-r border-l-4 border-l-slate-200 border-black/5 bg-white p-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="h-3 w-12 rounded bg-slate-100" />
+        <div className="h-3 w-14 rounded bg-slate-100" />
       </div>
-      <div className="mt-3 h-5 w-3/4 rounded bg-slate-100" />
-      <div className="mt-2 h-4 w-1/2 rounded bg-slate-100" />
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="h-8 rounded bg-slate-50" />
-        <div className="h-8 rounded bg-slate-50" />
+      <div className="mt-2 h-5 w-3/4 rounded bg-slate-100" />
+      <div className="mt-2 h-3.5 w-1/2 rounded bg-slate-100" />
+      <div className="mt-3 flex gap-2">
+        <div className="h-5 w-20 rounded bg-slate-100" />
+        <div className="h-5 w-16 rounded bg-slate-100" />
       </div>
-      <div className="mt-5 h-11 rounded-xl bg-slate-100" />
     </div>
   );
 }
