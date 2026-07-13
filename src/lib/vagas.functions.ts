@@ -1,21 +1,45 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { mockRespostaSetemp, mockRespostaSine } from "./vagas-mock";
 import type { FonteResposta } from "./vagas-types";
-
-// Server functions que expõem, em contrato uniforme, as vagas de cada fonte.
-// TODO: substituir estes retornos por parsing real dos boletins do Sine
-// e da API/scrape do Portal do Trabalhador do Amazonas, mantendo
-// exatamente o mesmo formato FonteResposta.
+import { getVagasSine as scraperSine } from "./sine-manaus";
+import { getVagasSetemp as scraperSetemp } from "./setemp";
 
 export const getVagasSine = createServerFn({ method: "GET" }).handler(
   async (): Promise<FonteResposta> => {
-    return mockRespostaSine;
+    try {
+      return await scraperSine();
+    } catch (error) {
+      console.error("Erro ao buscar vagas do Sine Manaus:", error);
+      return {
+        vagas: [],
+        resumo: {
+          fonte: "Prefeitura de Manaus - Sine Manaus",
+          totalCargos: 0,
+          totalVagas: 0,
+          linkOficial: "https://www.manaus.am.gov.br/",
+          atualizadoEm: new Date().toISOString(),
+        },
+      };
+    }
   },
 );
 
 export const getVagasSetemp = createServerFn({ method: "GET" }).handler(
   async (): Promise<FonteResposta> => {
-    return mockRespostaSetemp;
+    try {
+      return await scraperSetemp();
+    } catch (error) {
+      console.error("Erro ao buscar vagas do SETEMP:", error);
+      return {
+        vagas: [],
+        resumo: {
+          fonte: "SETEMP - Portal do Trabalhador do Amazonas",
+          totalCargos: 0,
+          totalVagas: 0,
+          linkOficial: "https://portaldotrabalhador.setemp.am.gov.br/",
+          atualizadoEm: new Date().toISOString(),
+        },
+      };
+    }
   },
 );

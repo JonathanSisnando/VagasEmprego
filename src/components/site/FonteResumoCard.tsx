@@ -14,7 +14,9 @@ export function FonteResumoCard({
   if (loading) {
     return (
       <div className="border border-black/5 bg-white p-3 rounded-sm">
-        <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground font-mono">{titulo}</p>
+        <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground font-mono">
+          {titulo}
+        </p>
         <div className="h-7 w-16 animate-pulse rounded bg-slate-100" />
         <div className="mt-2 h-1 w-full bg-slate-100" />
       </div>
@@ -29,22 +31,26 @@ export function FonteResumoCard({
       </div>
     );
   }
-  const declarado = resumo.totalDeclarado;
-  const importado = resumo.totalImportado;
-  const percentual = declarado && declarado > 0 ? Math.min(100, Math.round((importado / declarado) * 100)) : 100;
 
   return (
     <div className="border border-black/5 bg-white p-3 rounded-sm">
       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">
         Fonte: {titulo}
       </p>
-      <p className="mt-1 text-2xl font-bold text-foreground font-mono">
-        {importado}
-      </p>
+      <div className="mt-1 flex items-baseline gap-2">
+        <p className="text-2xl font-bold text-foreground font-mono">{resumo.totalCargos}</p>
+        <span className="text-xs text-muted-foreground">cargos</span>
+      </div>
+      <div className="mt-0.5 flex items-baseline gap-2">
+        <p className="text-lg font-semibold text-primary font-mono">{resumo.totalVagas}</p>
+        <span className="text-xs text-muted-foreground">vagas</span>
+      </div>
       <div className="mt-2 h-1 w-full bg-[#e8ecf1]">
         <div
           className="h-1 bg-primary"
-          style={{ width: `${percentual}%` }}
+          style={{
+            width: `${resumo.totalCargos > 0 ? Math.min(100, Math.round((resumo.totalVagas / resumo.totalCargos) * 10)) : 0}%`,
+          }}
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { ArrowRight, ClipboardList, MessageCircle, Search } from "lucide-react";
 
 import { CurriculoCTA } from "@/components/site/CurriculoCTA";
@@ -17,6 +18,7 @@ function Index() {
   const setemp = useVagasSetemp();
   const { vagas, isLoading } = useVagasUnificadas();
   const destaques = vagas.slice(0, 4);
+  const [openCardId, setOpenCardId] = useState<string | null>(null);
   const hoje = new Date().toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "long",
@@ -35,9 +37,8 @@ function Index() {
             Emprego de verdade em Manaus, sem complicação.
           </h1>
           <p className="mt-3 max-w-xl text-pretty text-sm text-muted-foreground md:text-base">
-            Reunimos as vagas do <strong>Sine Manaus</strong> e da{" "}
-            <strong>SETEMP</strong> em um só lugar. Gratuito, direto, sem
-            cadastro.
+            Reunimos as vagas do <strong>Sine Manaus</strong> e da <strong>SETEMP</strong> em um só
+            lugar. Gratuito, direto, sem cadastro.
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
@@ -78,9 +79,21 @@ function Index() {
           <h2 className="text-lg font-extrabold">Como funciona</h2>
           <ol className="mt-4 grid gap-3 md:grid-cols-3">
             {[
-              { icon: Search, t: "1. Encontre a vaga", d: "Filtre por bairro, categoria ou requisitos e escolha a que combina." },
-              { icon: ClipboardList, t: "2. Prepare seu currículo", d: "Já tem? Ótimo. Se não, montamos por WhatsApp a partir de R$ 7." },
-              { icon: MessageCircle, t: "3. Candidate-se", d: "Cada vaga leva ao canal oficial: Sine, SETEMP ou empresa." },
+              {
+                icon: Search,
+                t: "1. Encontre a vaga",
+                d: "Filtre por bairro, categoria ou requisitos e escolha a que combina.",
+              },
+              {
+                icon: ClipboardList,
+                t: "2. Prepare seu currículo",
+                d: "Já tem? Ótimo. Se não, montamos por WhatsApp a partir de R$ 7.",
+              },
+              {
+                icon: MessageCircle,
+                t: "3. Candidate-se",
+                d: "Cada vaga leva ao canal oficial: Sine, SETEMP ou empresa.",
+              },
             ].map((s) => (
               <li key={s.t} className="rounded-2xl border border-black/5 bg-white p-4">
                 <div className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
@@ -106,7 +119,14 @@ function Index() {
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             {isLoading && destaques.length === 0
               ? Array.from({ length: 4 }).map((_, i) => <VagaCardSkeleton key={i} />)
-              : destaques.map((v) => <VagaCard key={v.id} vaga={v} />)}
+              : destaques.map((v) => (
+                  <VagaCard
+                    key={v.id}
+                    vaga={v}
+                    isOpen={openCardId === v.id}
+                    onToggle={() => setOpenCardId(openCardId === v.id ? null : v.id)}
+                  />
+                ))}
           </div>
         </div>
       </section>

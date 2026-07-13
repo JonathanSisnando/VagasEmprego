@@ -1,7 +1,5 @@
 export type VagaFonte =
-  | "Prefeitura de Manaus - Sine Manaus"
-  | "SETEMP - Portal do Trabalhador do Amazonas"
-  | string;
+  "Prefeitura de Manaus - Sine Manaus" | "SETEMP - Portal do Trabalhador do Amazonas" | string;
 
 export type Vaga = {
   id: string;
@@ -34,8 +32,8 @@ export type Vaga = {
 
 export type FonteResumo = {
   fonte: string;
-  totalDeclarado: number | null;
-  totalImportado: number;
+  totalCargos: number; // Posições/roles únicas
+  totalVagas: number; // Total de vagas disponíveis (soma das quantitativeVagas)
   linkOficial: string;
   atualizadoEm: string; // ISO
 };

@@ -19,10 +19,7 @@ const vagasSine: Vaga[] = [
     escolaridade: "Ensino Médio Completo",
     experiencia: "Não exigida",
     salario: "Não informado",
-    requisitos: [
-      "Disponibilidade para turnos rotativos",
-      "Residir em Manaus",
-    ],
+    requisitos: ["Disponibilidade para turnos rotativos", "Residir em Manaus"],
     beneficios: ["Vale-transporte", "Vale-alimentação", "Plano de saúde"],
     comoSeCandidatar:
       "Comparecer a qualquer posto do Sine Manaus com documentos pessoais e currículo impresso.",
@@ -49,8 +46,7 @@ const vagasSine: Vaga[] = [
     salario: "Não informado",
     requisitos: ["Boa comunicação", "Experiência com atendimento"],
     beneficios: ["Vale-transporte", "Refeição no local"],
-    comoSeCandidatar:
-      "Candidatura presencial em qualquer posto do Sine Manaus.",
+    comoSeCandidatar: "Candidatura presencial em qualquer posto do Sine Manaus.",
     fonte: "Prefeitura de Manaus - Sine Manaus",
     linkFonte: "https://www.manaus.am.gov.br/",
     dataPublicacao: HOJE,
@@ -101,8 +97,7 @@ const vagasSetemp: Vaga[] = [
     salario: "R$ 1.840,00",
     requisitos: ["Conhecimento básico em informática"],
     beneficios: ["Vale-transporte", "Vale-refeição"],
-    comoSeCandidatar:
-      "Candidatar-se pelo Portal do Trabalhador do Amazonas.",
+    comoSeCandidatar: "Candidatar-se pelo Portal do Trabalhador do Amazonas.",
     fonte: "SETEMP - Portal do Trabalhador do Amazonas",
     linkFonte: "https://portaldotrabalhador.setemp.am.gov.br/",
     dataPublicacao: HOJE,
@@ -142,8 +137,8 @@ export const mockRespostaSine: FonteResposta = {
   vagas: vagasSine,
   resumo: {
     fonte: "Prefeitura de Manaus - Sine Manaus",
-    totalDeclarado: 142,
-    totalImportado: vagasSine.length,
+    totalCargos: vagasSine.length,
+    totalVagas: vagasSine.reduce((acc, v) => acc + (v.quantidadeVagas ?? 1), 0),
     linkOficial: "https://www.manaus.am.gov.br/",
     atualizadoEm: new Date().toISOString(),
   },
@@ -153,8 +148,8 @@ export const mockRespostaSetemp: FonteResposta = {
   vagas: vagasSetemp,
   resumo: {
     fonte: "SETEMP - Portal do Trabalhador do Amazonas",
-    totalDeclarado: 89,
-    totalImportado: vagasSetemp.length,
+    totalCargos: vagasSetemp.length,
+    totalVagas: vagasSetemp.reduce((acc, v) => acc + (v.quantidadeVagas ?? 1), 0),
     linkOficial: "https://portaldotrabalhador.setemp.am.gov.br/",
     atualizadoEm: new Date().toISOString(),
   },
