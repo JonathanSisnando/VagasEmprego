@@ -39,8 +39,8 @@ type DadosVagaExtraida = {
 };
 
 async function buscarNoticiaSineMaisRecente(): Promise<WordpressPost | null> {
-  // Tenta a API WordPress primeiro
   const url = new URL("https://www.manaus.am.gov.br/wp-json/wp/v2/posts");
+
   url.searchParams.set("search", "sine");
   url.searchParams.set("per_page", "20");
   url.searchParams.set("orderby", "date");
@@ -49,145 +49,37 @@ async function buscarNoticiaSineMaisRecente(): Promise<WordpressPost | null> {
 
   console.log("[Sine] Buscando notícias em:", url.toString());
 
-  try {
-    const resposta = await fetch(url.toString(), {
-      signal: AbortSignal.timeout(20000),
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "application/json, text/plain, */*",
-        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        "Cache-Control": "no-cache",
-      },
-    });
+  const resposta = await fetch(url.toString(), {
+    signal: AbortSignal.timeout(8000),
+  });
 
-    console.log("[Sine] Status da resposta:", resposta.status);
+  console.log("[Sine] Status da resposta:", resposta.status);
 
-    if (!resposta.ok) {
-      console.error("[Sine] Erro na resposta:", resposta.status);
-      throw new Error(`Erro HTTP: ${resposta.status}`);
-    }
-
-    const textoResposta = await resposta.text();
-    console.log("[Sine] Tamanho da resposta:", textoResposta.length, "bytes");
-
-    let posts: WordpressPost[];
-    try {
-      posts = JSON.parse(textoResposta) as WordpressPost[];
-    } catch (e) {
-      console.error("[Sine] Resposta não é JSON:", textoResposta.substring(0, 200));
-      throw new Error("Resposta não é JSON válido");
-    }
-
-    console.log("[Sine] Total de posts:", posts.length);
-
-    const postSine = posts.find((post) => {
-      const titulo = limparHtmlParaTexto(post.title.rendered).toLowerCase();
-      const slug = post.slug.toLowerCase();
-      const pareceSerSine = titulo.includes("sine") || slug.includes("sine");
-      const pareceSerVaga =
-        titulo.includes("vaga") ||
-        titulo.includes("vagas") ||
-        titulo.includes("emprego") ||
-        slug.includes("vaga") ||
-        slug.includes("vagas") ||
-        slug.includes("emprego");
-      const pareceSerManaus = titulo.includes("manaus") || slug.includes("manaus");
-      return pareceSerSine && pareceSerVaga && pareceSerManaus;
-    });
-
-    console.log("[Sine] Post encontrado:", postSine ? postSine.title.rendered : "NENHUM");
-    return postSine ?? null;
-  } catch (error) {
-    console.error("[Sine] Erro ao buscar notícias:", error);
-    // Fallback: tenta buscar a página HTML do Sine
-    return await buscarPaginaHtmlSine();
+  if (!resposta.ok) {
+    console.error("[Sine] Erro na resposta:", resposta.status);
+    throw new Error("Erro ao buscar notícia mais recente do Sine Manaus");
   }
-}
 
-async function buscarPaginaHtmlSine(): Promise<WordpressPost | null> {
-  console.log("[Sine] Tentando fallback via página HTML...");
-  try {
-    const resposta = await fetch("https://www.manaus.am.gov.br/noticia/oportunidade/", {
-      signal: AbortSignal.timeout(20000),
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "text/html,application/xhtml+xml",
-        "Accept-Language": "pt-BR,pt;q=0.9",
-      },
-    });
+  const posts = (await resposta.json()) as WordpressPost[];
+  console.log("[Sine] Total de posts:", posts.length);
 
-    if (!resposta.ok) return null;
+  const postSine = posts.find((post) => {
+    const titulo = limparHtmlParaTexto(post.title.rendered).toLowerCase();
+    const slug = post.slug.toLowerCase();
+    const pareceSerSine = titulo.includes("sine") || slug.includes("sine");
+    const pareceSerVaga =
+      titulo.includes("vaga") ||
+      titulo.includes("vagas") ||
+      titulo.includes("emprego") ||
+      slug.includes("vaga") ||
+      slug.includes("vagas") ||
+      slug.includes("emprego");
+    const pareceSerManaus = titulo.includes("manaus") || slug.includes("manaus");
+    return pareceSerSine && pareceSerVaga && pareceSerManaus;
+  });
 
-    const html = await resposta.text();
-
-    // Extrai o link da notícia mais recente do Sine
-    const matchLink = html.match(
-      /href="(\/noticia\/[^"]*sine[^"]*vagas[^"]*)"/i,
-    );
-    if (!matchLink) return null;
-
-    const linkNoticia = `https://www.manaus.am.gov.br${matchLink[1]}`;
-    console.log("[Sine] Link encontrado:", linkNoticia);
-
-    // Busca o conteúdo da notícia
-    const resNoticia = await fetch(linkNoticia, {
-      signal: AbortSignal.timeout(15000),
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    });
-
-    if (!resNoticia.ok) return null;
-
-    const htmlNoticia = await resNoticia.text();
-
-    // Extrai título
-    const matchTitulo = htmlNoticia.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-    const titulo = matchTitulo ? matchTitulo[1] : "Vagas Sine Manaus";
-
-    // Extrai conteúdo principal
-    const matchConteudo = htmlNoticia.match(
-      /<div[^>]*class="[^"]*conteudo[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
-    ) || htmlNoticia.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
-
-    const conteudo = matchConteudo ? matchConteudo[1] : "";
-
-    // Extrai data de publicação
-    const matchData = htmlNoticia.match(
-      /(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/i,
-    );
-    let dataStr = new Date().toISOString().slice(0, 10);
-    if (matchData) {
-      const meses: Record<string, string> = {
-        janeiro: "01", fevereiro: "02", março: "03", abril: "04",
-        maio: "05", junho: "06", julho: "07", agosto: "08",
-        setembro: "09", outubro: "10", novembro: "11", dezembro: "12",
-      };
-      const dia = matchData[1].padStart(2, "0");
-      const mes = meses[matchData[2].toLowerCase()] || "01";
-      const ano = matchData[3];
-      dataStr = `${ano}-${mes}-${dia}`;
-    }
-
-    const slug = linkNoticia.split("/").filter(Boolean).pop() || "sine-vagas";
-
-    return {
-      id: Date.now(),
-      date: dataStr,
-      slug,
-      link: linkNoticia,
-      title: { rendered: titulo },
-      content: { rendered: conteudo },
-    };
-  } catch (error) {
-    console.error("[Sine] Erro no fallback HTML:", error);
-    return null;
-  }
+  console.log("[Sine] Post encontrado:", postSine ? postSine.title.rendered : "NENHUM");
+  return postSine ?? null;
 }
 
 type ContextoFonte = {
@@ -389,43 +281,38 @@ function limparNomeDaSecao(linha: string) {
 }
 
 export async function getVagasSine(): Promise<FonteResposta> {
-  try {
-    console.log("[Sine] Iniciando busca de vagas...");
-    const post = await buscarNoticiaSineMaisRecente();
+  console.log("[Sine] Iniciando busca de vagas...");
+  const post = await buscarNoticiaSineMaisRecente();
 
-    if (!post) {
-      console.log("[Sine] Nenhum post encontrado");
-      return {
-        vagas: [],
-        resumo: {
-          fonte: "Prefeitura de Manaus - Sine Manaus",
-          totalCargos: 0,
-          totalVagas: 0,
-          linkOficial: "https://www.manaus.am.gov.br/",
-          atualizadoEm: new Date().toISOString(),
-        },
-      };
-    }
-
-    console.log("[Sine] Post encontrado:", post.title.rendered);
-    const vagas = extrairVagasDoPost(post);
-    console.log("[Sine] Vagas extraídas:", vagas.length);
-    const tituloPost = limparHtmlParaTexto(post.title.rendered);
-    const totalOficialTitulo = extrairTotalVagasDoTitulo(tituloPost);
-    console.log("[Sine] Total oficial do título:", totalOficialTitulo);
-
+  if (!post) {
+    console.log("[Sine] Nenhum post encontrado");
     return {
-      vagas,
+      vagas: [],
       resumo: {
         fonte: "Prefeitura de Manaus - Sine Manaus",
-        totalCargos: vagas.length,
-        totalVagas: totalOficialTitulo ?? vagas.reduce((acc, v) => acc + (v.quantidadeVagas ?? 1), 0),
-        linkOficial: post.link,
+        totalCargos: 0,
+        totalVagas: 0,
+        linkOficial: "https://www.manaus.am.gov.br/",
         atualizadoEm: new Date().toISOString(),
       },
     };
-  } catch (error) {
-    console.error("[Sine] Erro em getVagasSine:", error);
-    throw error;
   }
+
+  console.log("[Sine] Post encontrado:", post.title.rendered);
+  const vagas = extrairVagasDoPost(post);
+  console.log("[Sine] Vagas extraídas:", vagas.length);
+  const tituloPost = limparHtmlParaTexto(post.title.rendered);
+  const totalOficialTitulo = extrairTotalVagasDoTitulo(tituloPost);
+  console.log("[Sine] Total oficial do título:", totalOficialTitulo);
+
+  return {
+    vagas,
+    resumo: {
+      fonte: "Prefeitura de Manaus - Sine Manaus",
+      totalCargos: vagas.length,
+      totalVagas: totalOficialTitulo ?? vagas.reduce((acc, v) => acc + (v.quantidadeVagas ?? 1), 0),
+      linkOficial: post.link,
+      atualizadoEm: new Date().toISOString(),
+    },
+  };
 }
