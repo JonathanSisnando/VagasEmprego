@@ -5,6 +5,7 @@
 export const WHATSAPP_NUMERO = "5592900000000";
 
 export const SITE_NOME = "Vagas Manaus Hoje";
+export const SITE_VERSAO = "v1.0.0";
 export const SITE_DESCRICAO =
   "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias.";
 
