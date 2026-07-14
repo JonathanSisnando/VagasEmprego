@@ -16,7 +16,7 @@ export function FiltrosVagas({
           Filtros rápidos
         </p>
         <p className="text-[10px] font-medium text-muted-foreground font-mono">
-          {total} {total === 1 ? "vaga" : "vagas"}
+          {total} {total === 1 ? "cargo" : "cargos"}
         </p>
       </div>
       <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 pb-2">
