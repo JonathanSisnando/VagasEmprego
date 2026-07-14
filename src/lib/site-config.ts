@@ -1,8 +1,8 @@
 // Configuração central do site. Edite aqui número de WhatsApp e URLs oficiais.
 
 // WhatsApp de contato do serviço de currículo / envio de vaga.
-// Formato internacional sem símbolos (ex: 5592900000000).
-export const WHATSAPP_NUMERO = "5592900000000";
+// Formato internacional sem símbolos (ex: 5592985194689).
+export const WHATSAPP_NUMERO = "5592985194689";
 
 export const SITE_NOME = "Vagas Manaus Hoje";
 export const SITE_VERSAO = "v1.2.0";
