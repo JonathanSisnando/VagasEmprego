@@ -330,5 +330,9 @@ export async function getVagasSine(): Promise<FonteResposta> {
         linkOficial: post.link,
         atualizadoEm: new Date().toISOString(),
       },
-  };
+    };
+  } catch (error) {
+    console.error("[Sine] Erro em getVagasSine:", error);
+    throw error;
+  }
 }
