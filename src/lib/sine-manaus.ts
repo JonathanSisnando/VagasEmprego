@@ -47,7 +47,10 @@ async function buscarNoticiaSineMaisRecente(): Promise<WordpressPost | null> {
   url.searchParams.set("_fields", "id,date,slug,link,title,content");
 
   const resposta = await fetch(url.toString(), {
-    signal: AbortSignal.timeout(8000),
+    signal: AbortSignal.timeout(15000),
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VagasManausHoje/1.0",
+    },
   });
 
   if (!resposta.ok) throw new Error("Erro ao buscar notícias do Sine Manaus");
