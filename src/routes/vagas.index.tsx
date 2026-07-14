@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useMemo, useState, useCallback } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import { AntiFraudNotice } from "@/components/site/AntiFraudNotice";
 import { aplicarFiltro, FiltrosVagas } from "@/components/site/FiltrosVagas";
@@ -9,6 +9,8 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { VagaCard, VagaCardSkeleton } from "@/components/site/VagaCard";
 import { useVagasSetemp, useVagasSine, useVagasUnificadas } from "@/lib/vagas-hooks";
 import type { FiltroRapido } from "@/lib/vagas-types";
+
+const ITENS_POR_PAGINA = 10;
 
 export const Route = createFileRoute("/vagas/")({
   head: () => ({
@@ -33,6 +35,7 @@ function VagasPage() {
   const [filtro, setFiltro] = useState<FiltroRapido>("Todas");
   const [bairro, setBairro] = useState<string>("");
   const [openCardId, setOpenCardId] = useState<string | null>(null);
+  const [itensVisiveis, setItensVisiveis] = useState(ITENS_POR_PAGINA);
 
   const { vagas, isLoading } = useVagasUnificadas();
   const sine = useVagasSine();
@@ -49,15 +52,37 @@ function VagasPage() {
     return list;
   }, [vagas, filtro, bairro]);
 
-  const handleFiltroChange = (novoFiltro: FiltroRapido) => {
-    setFiltro(novoFiltro);
-    setOpenCardId(null);
-  };
+  const vagasVisiveis = useMemo(() => filtradas.slice(0, itensVisiveis), [filtradas, itensVisiveis]);
+  const temMaisVagas = itensVisiveis < filtradas.length;
 
-  const handleBairroChange = (novoBairro: string) => {
-    setBairro(novoBairro);
+  const handleFiltroChange = useCallback(
+    (novoFiltro: FiltroRapido) => {
+      setFiltro(novoFiltro);
+      setItensVisiveis(ITENS_POR_PAGINA);
+      setOpenCardId(null);
+    },
+    [],
+  );
+
+  const handleBairroChange = useCallback(
+    (novoBairro: string) => {
+      setBairro(novoBairro);
+      setItensVisiveis(ITENS_POR_PAGINA);
+      setOpenCardId(null);
+    },
+    [],
+  );
+
+  const handleCarregarMais = useCallback(() => {
+    setItensVisiveis((prev) => prev + ITENS_POR_PAGINA);
+  }, []);
+
+  const handleLimparFiltros = useCallback(() => {
+    setFiltro("Todas");
+    setBairro("");
+    setItensVisiveis(ITENS_POR_PAGINA);
     setOpenCardId(null);
-  };
+  }, []);
 
   return (
     <SiteLayout>
@@ -114,11 +139,7 @@ function VagasPage() {
             <div className="flex justify-end">
               <button
                 type="button"
-                onClick={() => {
-                  setFiltro("Todas");
-                  setBairro("");
-                  setOpenCardId(null);
-                }}
+                onClick={handleLimparFiltros}
                 className="text-xs font-bold text-primary font-mono uppercase tracking-wider"
               >
                 Limpar filtros
@@ -130,7 +151,7 @@ function VagasPage() {
 
       <section className="px-4 pt-6">
         <div className="mx-auto max-w-5xl space-y-4">
-          {isLoading && filtradas.length === 0 ? (
+          {isLoading && vagasVisiveis.length === 0 ? (
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <VagaCardSkeleton key={i} />
@@ -146,33 +167,42 @@ function VagasPage() {
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  setFiltro("Todas");
-                  setBairro("");
-                  setOpenCardId(null);
-                }}
+                onClick={handleLimparFiltros}
                 className="mt-4 rounded-sm bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
               >
                 Limpar filtros
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {filtradas.map((v) => (
-                <VagaCard
-                  key={v.id}
-                  vaga={v}
-                  isOpen={openCardId === v.id}
-                  onToggle={() => setOpenCardId(openCardId === v.id ? null : v.id)}
-                />
-              ))}
-            </div>
-          )}
+            <>
+              <div className="space-y-4">
+                {vagasVisiveis.map((v) => (
+                  <VagaCard
+                    key={v.id}
+                    vaga={v}
+                    isOpen={openCardId === v.id}
+                    onToggle={() => setOpenCardId(openCardId === v.id ? null : v.id)}
+                  />
+                ))}
+              </div>
 
-          {!isLoading && filtradas.length > 0 && (
-            <button className="w-full rounded-sm border border-dashed border-muted-foreground py-3 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:bg-white font-mono">
-              Carregar mais registros
-            </button>
+              {temMaisVagas && (
+                <button
+                  type="button"
+                  onClick={handleCarregarMais}
+                  className="flex w-full items-center justify-center gap-2 rounded-sm border border-dashed border-muted-foreground py-3 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:bg-white font-mono"
+                >
+                  <ChevronDown className="size-4" />
+                  Carregar mais ({filtradas.length - itensVisiveis} restantes)
+                </button>
+              )}
+
+              {!temMaisVagas && filtradas.length > ITENS_POR_PAGINA && (
+                <p className="text-center text-xs text-muted-foreground font-mono">
+                  Todas as {filtradas.length} vagas foram carregadas
+                </p>
+              )}
+            </>
           )}
 
           <div className="pt-6">
