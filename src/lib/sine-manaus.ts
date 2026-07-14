@@ -46,16 +46,38 @@ async function buscarNoticiaSineMaisRecente(): Promise<WordpressPost | null> {
   url.searchParams.set("order", "desc");
   url.searchParams.set("_fields", "id,date,slug,link,title,content");
 
+  console.log("[Sine] Buscando notícias em:", url.toString());
+
   const resposta = await fetch(url.toString(), {
     signal: AbortSignal.timeout(15000),
     headers: {
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VagasManausHoje/1.0",
+      Accept: "application/json",
     },
   });
 
-  if (!resposta.ok) throw new Error("Erro ao buscar notícias do Sine Manaus");
+  console.log("[Sine] Status da resposta:", resposta.status);
 
-  const posts = (await resposta.json()) as WordpressPost[];
+  if (!resposta.ok) {
+    const textoErro = await resposta.text();
+    console.error("[Sine] Erro na resposta:", resposta.status, textoErro.substring(0, 200));
+    throw new Error(`Erro ao buscar notícias do Sine Manaus: ${resposta.status}`);
+  }
+
+  const textoResposta = await resposta.text();
+  console.log("[Sine] Tamanho da resposta:", textoResposta.length, "bytes");
+  console.log("[Sine] Primeiros 100 chars:", textoResposta.substring(0, 100));
+
+  let posts: WordpressPost[];
+  try {
+    posts = JSON.parse(textoResposta) as WordpressPost[];
+  } catch (e) {
+    console.error("[Sine] Erro ao parsear JSON:", e);
+    console.error("[Sine] Resposta recebida:", textoResposta.substring(0, 500));
+    throw new Error("Resposta da API não é JSON válido");
+  }
+
+  console.log("[Sine] Total de posts encontrados:", posts.length);
 
   const postSine = posts.find((post) => {
     const titulo = limparHtmlParaTexto(post.title.rendered).toLowerCase();
@@ -274,33 +296,39 @@ function limparNomeDaSecao(linha: string) {
 }
 
 export async function getVagasSine(): Promise<FonteResposta> {
-  const post = await buscarNoticiaSineMaisRecente();
+  try {
+    console.log("[Sine] Iniciando busca de vagas...");
+    const post = await buscarNoticiaSineMaisRecente();
 
-  if (!post) {
+    if (!post) {
+      console.log("[Sine] Nenhum post encontrado");
+      return {
+        vagas: [],
+        resumo: {
+          fonte: "Prefeitura de Manaus - Sine Manaus",
+          totalCargos: 0,
+          totalVagas: 0,
+          linkOficial: "https://www.manaus.am.gov.br/",
+          atualizadoEm: new Date().toISOString(),
+        },
+      };
+    }
+
+    console.log("[Sine] Post encontrado:", post.title.rendered);
+    const vagas = extrairVagasDoPost(post);
+    console.log("[Sine] Vagas extraídas:", vagas.length);
+    const tituloPost = limparHtmlParaTexto(post.title.rendered);
+    const totalOficialTitulo = extrairTotalVagasDoTitulo(tituloPost);
+    console.log("[Sine] Total oficial do título:", totalOficialTitulo);
+
     return {
-      vagas: [],
+      vagas,
       resumo: {
         fonte: "Prefeitura de Manaus - Sine Manaus",
-        totalCargos: 0,
-        totalVagas: 0,
-        linkOficial: "https://www.manaus.am.gov.br/",
+        totalCargos: vagas.length,
+        totalVagas: totalOficialTitulo ?? vagas.reduce((acc, v) => acc + (v.quantidadeVagas ?? 1), 0),
+        linkOficial: post.link,
         atualizadoEm: new Date().toISOString(),
       },
-    };
-  }
-
-  const vagas = extrairVagasDoPost(post);
-  const tituloPost = limparHtmlParaTexto(post.title.rendered);
-  const totalOficialTitulo = extrairTotalVagasDoTitulo(tituloPost);
-
-  return {
-    vagas,
-    resumo: {
-      fonte: "Prefeitura de Manaus - Sine Manaus",
-      totalCargos: vagas.length,
-      totalVagas: totalOficialTitulo ?? vagas.reduce((acc, v) => acc + (v.quantidadeVagas ?? 1), 0),
-      linkOficial: post.link,
-      atualizadoEm: new Date().toISOString(),
-    },
   };
 }

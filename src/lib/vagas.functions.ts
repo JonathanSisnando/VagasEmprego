@@ -7,9 +7,13 @@ import { getVagasSetemp as scraperSetemp } from "./setemp";
 export const getVagasSine = createServerFn({ method: "GET" }).handler(
   async (): Promise<FonteResposta> => {
     try {
-      return await scraperSine();
+      console.log("[ServerFn] Chamando scraperSine...");
+      const resultado = await scraperSine();
+      console.log("[ServerFn] scraperSine retornou:", resultado.resumo.totalCargos, "cargos,", resultado.resumo.totalVagas, "vagas");
+      return resultado;
     } catch (error) {
-      console.error("Erro ao buscar vagas do Sine Manaus:", error);
+      console.error("[ServerFn] Erro ao buscar vagas do Sine Manaus:", error);
+      console.error("[ServerFn] Stack trace:", error instanceof Error ? error.stack : "N/A");
       return {
         vagas: [],
         resumo: {
