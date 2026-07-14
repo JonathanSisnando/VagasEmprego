@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useCallback } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Search } from "lucide-react";
 
 import { AntiFraudNotice } from "@/components/site/AntiFraudNotice";
 import { aplicarFiltro, FiltrosVagas } from "@/components/site/FiltrosVagas";
@@ -34,6 +34,7 @@ export const Route = createFileRoute("/vagas/")({
 function VagasPage() {
   const [filtro, setFiltro] = useState<FiltroRapido>("Todas");
   const [bairro, setBairro] = useState<string>("");
+  const [busca, setBusca] = useState<string>("");
   const [openCardId, setOpenCardId] = useState<string | null>(null);
   const [itensVisiveis, setItensVisiveis] = useState(ITENS_POR_PAGINA);
 
@@ -49,8 +50,18 @@ function VagasPage() {
   const filtradas = useMemo(() => {
     let list = aplicarFiltro(vagas, filtro);
     if (bairro) list = list.filter((v) => v.bairro === bairro);
+    if (busca.trim()) {
+      const termo = busca.toLowerCase().trim();
+      list = list.filter(
+        (v) =>
+          v.titulo.toLowerCase().includes(termo) ||
+          v.empresa.toLowerCase().includes(termo) ||
+          v.categoria.toLowerCase().includes(termo) ||
+          v.bairro.toLowerCase().includes(termo),
+      );
+    }
     return list;
-  }, [vagas, filtro, bairro]);
+  }, [vagas, filtro, bairro, busca]);
 
   const vagasVisiveis = useMemo(() => filtradas.slice(0, itensVisiveis), [filtradas, itensVisiveis]);
   const temMaisVagas = itensVisiveis < filtradas.length;
@@ -113,6 +124,26 @@ function VagasPage() {
 
       <div className="border-b border-black/5 bg-background px-4 py-4">
         <div className="mx-auto max-w-5xl space-y-3">
+          <div className="relative">
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar por cargo, empresa ou bairro..."
+              className="w-full rounded-sm border border-black/10 bg-white px-4 py-2.5 pl-10 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            {busca && (
+              <button
+                type="button"
+                onClick={() => setBusca("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary"
+              >
+                Limpar
+              </button>
+            )}
+          </div>
+
           <div className="relative">
             <select
               id="bairro"

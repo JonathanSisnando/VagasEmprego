@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { WhatsAppButton } from "./WhatsAppButton";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -9,6 +10,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <Header />
       <main>{children}</main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }

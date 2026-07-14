@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowRight, ClipboardList, MessageCircle, Search } from "lucide-react";
 
 import { CurriculoCTA } from "@/components/site/CurriculoCTA";
+import { FadeIn } from "@/components/site/FadeIn";
 import { FonteResumoCard } from "@/components/site/FonteResumoCard";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { VagaCard, VagaCardSkeleton } from "@/components/site/VagaCard";
@@ -74,7 +75,8 @@ function Index() {
       </header>
 
       {/* Como funciona */}
-      <section className="px-4 py-10">
+      <FadeIn>
+        <section className="px-4 py-10">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-lg font-extrabold">Como funciona</h2>
           <ol className="mt-4 grid gap-3 md:grid-cols-3">
@@ -106,8 +108,10 @@ function Index() {
           </ol>
         </div>
       </section>
+      </FadeIn>
 
       {/* Destaques */}
+      <FadeIn>
       <section className="px-4">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-end justify-between">
@@ -130,6 +134,7 @@ function Index() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
       {/* CTA currículo */}
       <section className="mt-10 px-4">

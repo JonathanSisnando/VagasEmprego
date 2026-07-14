@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 
 import { SITE_NOME } from "@/lib/site-config";
 
@@ -13,6 +13,19 @@ const NAV = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains("dark");
+    setDark(isDark);
+  }, []);
+
+  const toggleDark = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
 
   return (
     <nav className="sticky top-0 z-40 border-b border-black/5 bg-background/90 backdrop-blur-md">
@@ -35,6 +48,16 @@ export function Header() {
               </Link>
             </li>
           ))}
+          <li>
+            <button
+              type="button"
+              onClick={toggleDark}
+              className="rounded-full p-1.5 text-muted-foreground transition-colors hover:text-primary"
+              aria-label={dark ? "Modo claro" : "Modo escuro"}
+            >
+              {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </button>
+          </li>
         </ul>
 
         <button
@@ -63,6 +86,16 @@ export function Header() {
                 </Link>
               </li>
             ))}
+            <li className="border-t border-black/5 py-3">
+              <button
+                type="button"
+                onClick={toggleDark}
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground font-mono uppercase tracking-wider"
+              >
+                {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                {dark ? "Modo claro" : "Modo escuro"}
+              </button>
+            </li>
           </ul>
         </div>
       ) : null}

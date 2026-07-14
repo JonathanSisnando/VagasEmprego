@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type {} from "@tanstack/react-start";
 
-const BASE_URL = "";
+const BASE_URL = "https://vagas-manaus.vercel.app";
 
 type SitemapEntry = {
   path: string;
@@ -24,6 +23,23 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/contato", changefreq: "monthly", priority: "0.4" },
           { path: "/politica-de-privacidade", changefreq: "yearly", priority: "0.3" },
         ];
+
+        // Tenta adicionar vagas dinâmicas ao sitemap
+        try {
+          const [resSine, resSetemp] = await Promise.all([
+            fetch("https://www.manaus.am.gov.br/wp-json/wp/v2/posts?search=sine&per_page=1&orderby=date&order=desc&_fields=id,date", { signal: AbortSignal.timeout(5000) }),
+            fetch("https://www.portaldotrabalhador.am.gov.br/jobs", { signal: AbortSignal.timeout(5000) }),
+          ]);
+
+          if (resSine.ok) {
+            const posts = await resSine.json() as { id: number; date: string }[];
+            const dataAtual = new Date().toISOString().slice(0, 10);
+            // Adiciona sitemap genérico para vagas (o slug é derivado do título)
+            entries.push({ path: "/vagas", changefreq: "daily", priority: "0.9", lastmod: posts[0]?.date?.slice(0, 10) ?? dataAtual });
+          }
+        } catch {
+          // fallback sem vagas dinâmicas
+        }
 
         const urls = entries
           .map((e) =>
