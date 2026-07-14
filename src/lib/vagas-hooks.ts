@@ -4,6 +4,7 @@ import type { FonteResposta, Vaga } from "./vagas-types";
 
 const WORDPRESS_API = "https://www.manaus.am.gov.br/wp-json/wp/v2/posts";
 const SETEMP_API = "https://www.portaldotrabalhador.am.gov.br";
+const PROXY_API = "/api/proxy?url=";
 
 // ==================== UTILS ====================
 
@@ -381,7 +382,7 @@ async function fetchSine(): Promise<FonteResposta> {
 type VagaSetempResumo = { slugOdoo: string; id: string; tituloOriginal: string; quantidadeVagas: number };
 
 async function buscarListaDeVagasSetemp(): Promise<VagaSetempResumo[]> {
-  const resposta = await fetch(`${SETEMP_API}/jobs`, {
+  const resposta = await fetch(`${PROXY_API}${encodeURIComponent(`${SETEMP_API}/jobs`)}`, {
     signal: AbortSignal.timeout(10000),
   });
   if (!resposta.ok) throw new Error("Erro ao buscar lista de vagas do SETEMP");
@@ -449,7 +450,7 @@ function tituloCase(texto: string) {
 }
 
 async function buscarDetalheDeVagaSetemp(slugOdoo: string) {
-  const resposta = await fetch(`${SETEMP_API}/jobs/detail/${slugOdoo}`, {
+  const resposta = await fetch(`${PROXY_API}${encodeURIComponent(`${SETEMP_API}/jobs/detail/${slugOdoo}`)}`, {
     signal: AbortSignal.timeout(10000),
   });
   if (!resposta.ok) return null;
