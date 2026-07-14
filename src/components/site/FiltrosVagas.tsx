@@ -43,12 +43,14 @@ export function FiltrosVagas({
   );
 }
 
-export function aplicarFiltro<T extends {
-  categoria: string;
-  experiencia: string;
-  escolaridade: string;
-  pcd?: boolean;
-}>(vagas: T[], filtro: FiltroRapido): T[] {
+export function aplicarFiltro<
+  T extends {
+    categoria: string;
+    experiencia: string;
+    escolaridade: string;
+    pcd?: boolean;
+  },
+>(vagas: T[], filtro: FiltroRapido): T[] {
   if (filtro === "Todas") return vagas;
   const norm = (s: string) => s.toLowerCase();
   switch (filtro) {
@@ -63,9 +65,7 @@ export function aplicarFiltro<T extends {
     case "Serviços gerais":
       return vagas.filter((v) => norm(v.categoria).includes("serviços gerais"));
     case "Atendimento":
-      return vagas.filter((v) =>
-        /atendimento|comércio|comercio/i.test(v.categoria),
-      );
+      return vagas.filter((v) => /atendimento|comércio|comercio/i.test(v.categoria));
     default:
       return vagas.filter((v) => norm(v.categoria) === norm(filtro));
   }

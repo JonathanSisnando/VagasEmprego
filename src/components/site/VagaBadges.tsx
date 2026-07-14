@@ -5,7 +5,10 @@ export function isFromSine(v: Vaga) {
 }
 
 export function isFromSetemp(v: Vaga) {
-  return v.fonte.toLowerCase().includes("setemp") || v.fonte.toLowerCase().includes("portal do trabalhador");
+  return (
+    v.fonte.toLowerCase().includes("setemp") ||
+    v.fonte.toLowerCase().includes("portal do trabalhador")
+  );
 }
 
 export function fonteCurta(v: Vaga): string {

@@ -8,7 +8,10 @@ export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
       { title: "Contato — Vagas Manaus Hoje" },
-      { name: "description", content: "Fale com o Vagas Manaus Hoje pelo WhatsApp, e-mail ou Instagram." },
+      {
+        name: "description",
+        content: "Fale com o Vagas Manaus Hoje pelo WhatsApp, e-mail ou Instagram.",
+      },
       { property: "og:title", content: "Contato" },
       { property: "og:description", content: "Canais para falar com o Vagas Manaus Hoje." },
     ],

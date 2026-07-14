@@ -108,7 +108,10 @@ function VagaDetailPage() {
           <p className="mt-2 text-sm text-muted-foreground">
             Esta vaga pode ter sido preenchida ou removida.
           </p>
-          <Link to="/vagas" className="mt-6 inline-block rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
+          <Link
+            to="/vagas"
+            className="mt-6 inline-block rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+          >
             Ver vagas de hoje
           </Link>
         </div>
@@ -137,12 +140,8 @@ function VagaDetailPage() {
       <div className="mx-auto grid max-w-5xl gap-8 px-4 pb-40 md:grid-cols-[1fr_320px] md:pb-16">
         <article className="min-w-0">
           <VagaBadges vaga={vaga} />
-          <h1 className="mt-3 text-2xl font-black leading-tight md:text-3xl">
-            {vaga.titulo}
-          </h1>
-          <p className="mt-1 text-sm font-medium text-muted-foreground">
-            {vaga.empresa}
-          </p>
+          <h1 className="mt-3 text-2xl font-black leading-tight md:text-3xl">{vaga.titulo}</h1>
+          <p className="mt-1 text-sm font-medium text-muted-foreground">{vaga.empresa}</p>
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <MapPin className="size-4" aria-hidden />
             {vaga.bairro !== "Não informado" ? `${vaga.bairro} · ` : ""}

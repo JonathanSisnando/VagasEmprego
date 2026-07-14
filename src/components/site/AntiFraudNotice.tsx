@@ -4,10 +4,7 @@ import { AVISO_ANTIFRAUDE } from "@/lib/site-config";
 
 export function AntiFraudNotice({ compact = false }: { compact?: boolean }) {
   return (
-    <div
-      role="alert"
-      className="flex items-start gap-3 border-l-4 border-l-alert bg-alert/5 p-4"
-    >
+    <div role="alert" className="flex items-start gap-3 border-l-4 border-l-alert bg-alert/5 p-4">
       <div className="grid size-7 shrink-0 place-items-center rounded-full bg-alert text-alert-foreground">
         <AlertTriangle className="size-4" aria-hidden />
       </div>
@@ -19,7 +16,9 @@ export function AntiFraudNotice({ compact = false }: { compact?: boolean }) {
           {AVISO_ANTIFRAUDE}
           {!compact ? (
             <>
-              {" "}Se pedirem dinheiro, exames pagos ou cursos obrigatórios antes da contratação, <strong>é golpe</strong>.
+              {" "}
+              Se pedirem dinheiro, exames pagos ou cursos obrigatórios antes da contratação,{" "}
+              <strong>é golpe</strong>.
             </>
           ) : null}
         </p>

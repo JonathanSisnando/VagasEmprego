@@ -12,8 +12,8 @@ export function CurriculoCTA({ vagaTitulo }: { vagaTitulo?: string }) {
         Precisa de currículo pronto para esta vaga?
       </h2>
       <p className="mt-2 text-pretty text-sm text-slate-300">
-        Não tem currículo ou quer adaptar para esta vaga específica? Nossa
-        equipe monta e devolve tudo pelo WhatsApp.
+        Não tem currículo ou quer adaptar para esta vaga específica? Nossa equipe monta e devolve
+        tudo pelo WhatsApp.
       </p>
       <div className="mt-6 flex items-end justify-between gap-4">
         <div>

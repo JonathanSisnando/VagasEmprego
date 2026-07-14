@@ -9,7 +9,11 @@ export const Route = createFileRoute("/enviar-vaga")({
   head: () => ({
     meta: [
       { title: "Enviar uma vaga — Vagas Manaus Hoje" },
-      { name: "description", content: "Divulgue uma vaga de emprego em Manaus. Envie os dados pelo WhatsApp e publicamos gratuitamente." },
+      {
+        name: "description",
+        content:
+          "Divulgue uma vaga de emprego em Manaus. Envie os dados pelo WhatsApp e publicamos gratuitamente.",
+      },
       { property: "og:title", content: "Envie sua vaga para o Vagas Manaus Hoje" },
       { property: "og:description", content: "Divulgação gratuita de vagas em Manaus." },
     ],
@@ -53,8 +57,8 @@ function EnviarVagaPage() {
             Divulgue sua vaga gratuitamente.
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Junte as informações abaixo e envie pelo WhatsApp. Publicamos assim
-            que conseguirmos confirmar a vaga.
+            Junte as informações abaixo e envie pelo WhatsApp. Publicamos assim que conseguirmos
+            confirmar a vaga.
           </p>
         </div>
       </header>

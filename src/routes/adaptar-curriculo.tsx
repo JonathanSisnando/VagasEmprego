@@ -5,11 +5,7 @@ import { z } from "zod";
 import { AntiFraudNotice } from "@/components/site/AntiFraudNotice";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { StickyMobileCTA } from "@/components/site/StickyMobileCTA";
-import {
-  PRECO_CURRICULO_MAX,
-  PRECO_CURRICULO_MIN,
-  whatsappLink,
-} from "@/lib/site-config";
+import { PRECO_CURRICULO_MAX, PRECO_CURRICULO_MIN, whatsappLink } from "@/lib/site-config";
 
 const searchSchema = z.object({
   vaga: z.string().optional(),
@@ -20,7 +16,10 @@ export const Route = createFileRoute("/adaptar-curriculo")({
   head: () => ({
     meta: [
       { title: "Montar ou adaptar currículo — Vagas Manaus Hoje" },
-      { name: "description", content: `Serviço opcional: montamos ou adaptamos seu currículo para a vaga desejada por R$ ${PRECO_CURRICULO_MIN} a R$ ${PRECO_CURRICULO_MAX}, entregue via WhatsApp.` },
+      {
+        name: "description",
+        content: `Serviço opcional: montamos ou adaptamos seu currículo para a vaga desejada por R$ ${PRECO_CURRICULO_MIN} a R$ ${PRECO_CURRICULO_MAX}, entregue via WhatsApp.`,
+      },
       { property: "og:title", content: "Currículo pronto para sua vaga em Manaus" },
       { property: "og:description", content: "Serviço via WhatsApp/Pix. Rápido e direto." },
     ],
@@ -48,17 +47,16 @@ function AdaptarCurriculoPage() {
             Currículo pronto para a vaga que você quer.
           </h1>
           <p className="mt-2 text-pretty text-sm text-muted-foreground md:text-base">
-            Não tem currículo? Montamos do zero. Já tem? Adaptamos para a vaga.
-            Tudo por WhatsApp, entrega rápida.
+            Não tem currículo? Montamos do zero. Já tem? Adaptamos para a vaga. Tudo por WhatsApp,
+            entrega rápida.
           </p>
 
           <div className="mt-6 flex items-end gap-4 rounded-2xl border border-black/5 bg-slate-50 p-5">
             <div>
-              <p className="font-mono text-[10px] uppercase text-slate-500">
-                Investimento
-              </p>
+              <p className="font-mono text-[10px] uppercase text-slate-500">Investimento</p>
               <p className="text-3xl font-black">
-                R$ {PRECO_CURRICULO_MIN} <span className="text-lg text-slate-400">–</span> R$ {PRECO_CURRICULO_MAX}
+                R$ {PRECO_CURRICULO_MIN} <span className="text-lg text-slate-400">–</span> R${" "}
+                {PRECO_CURRICULO_MAX}
               </p>
               <p className="mt-1 text-xs text-slate-500">Pagamento via Pix</p>
             </div>
@@ -83,7 +81,10 @@ function AdaptarCurriculoPage() {
         <ol className="mt-4 space-y-3">
           {[
             { t: "1. Envie a vaga de interesse", d: "Manda o nome da vaga ou o link no WhatsApp." },
-            { t: "2. Nossa equipe monta ou adapta", d: "Escrevemos com o foco certo para o tipo da vaga." },
+            {
+              t: "2. Nossa equipe monta ou adapta",
+              d: "Escrevemos com o foco certo para o tipo da vaga.",
+            },
             { t: "3. Recebe pronto pelo WhatsApp", d: "Currículo em PDF, pronto para candidatar." },
           ].map((s) => (
             <li key={s.t} className="flex gap-3 rounded-2xl border border-black/5 bg-white p-4">
@@ -110,8 +111,8 @@ function AdaptarCurriculoPage() {
         </div>
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Serviço de redação profissional. <strong>Não garante contratação</strong> —
-          quem contrata é a empresa da vaga.
+          Serviço de redação profissional. <strong>Não garante contratação</strong> — quem contrata
+          é a empresa da vaga.
         </p>
 
         <div className="mt-6">

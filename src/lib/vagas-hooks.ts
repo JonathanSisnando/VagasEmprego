@@ -24,10 +24,7 @@ export function useVagasUnificadas() {
   const sine = useVagasSine();
   const setemp = useVagasSetemp();
 
-  const vagas: Vaga[] = [
-    ...(sine.data?.vagas ?? []),
-    ...(setemp.data?.vagas ?? []),
-  ];
+  const vagas: Vaga[] = [...(sine.data?.vagas ?? []), ...(setemp.data?.vagas ?? [])];
 
   return {
     vagas,

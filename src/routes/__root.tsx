@@ -78,15 +78,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Vagas Manaus Hoje — vagas de emprego em Manaus atualizadas" },
-      { name: "description", content: "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias, com filtros e candidatura direta." },
-      { property: "og:title", content: "Vagas Manaus Hoje — vagas de emprego em Manaus atualizadas" },
-      { property: "og:description", content: "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias, com filtros e candidatura direta." },
+      {
+        name: "description",
+        content:
+          "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias, com filtros e candidatura direta.",
+      },
+      {
+        property: "og:title",
+        content: "Vagas Manaus Hoje — vagas de emprego em Manaus atualizadas",
+      },
+      {
+        property: "og:description",
+        content:
+          "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias, com filtros e candidatura direta.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Vagas Manaus Hoje — vagas de emprego em Manaus atualizadas" },
-      { name: "twitter:description", content: "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias, com filtros e candidatura direta." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5fe9246e-0ee5-4e03-a2f3-8850e09ba30d/id-preview-46572212--5dd01b58-e04e-486b-a808-65baf25e2029.lovable.app-1783895624051.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5fe9246e-0ee5-4e03-a2f3-8850e09ba30d/id-preview-46572212--5dd01b58-e04e-486b-a808-65baf25e2029.lovable.app-1783895624051.png" },
+      {
+        name: "twitter:title",
+        content: "Vagas Manaus Hoje — vagas de emprego em Manaus atualizadas",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Central independente de vagas de emprego em Manaus (AM). Vagas do Sine Manaus e SETEMP atualizadas todos os dias, com filtros e candidatura direta.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5fe9246e-0ee5-4e03-a2f3-8850e09ba30d/id-preview-46572212--5dd01b58-e04e-486b-a808-65baf25e2029.lovable.app-1783895624051.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5fe9246e-0ee5-4e03-a2f3-8850e09ba30d/id-preview-46572212--5dd01b58-e04e-486b-a808-65baf25e2029.lovable.app-1783895624051.png",
+      },
     ],
     links: [
       {
@@ -95,7 +121,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
