@@ -150,7 +150,7 @@ export function VagasClient() {
                 {carregando ? "…" : todasVagas.length}
               </span>
               <span className="text-sm font-bold text-blue-700">
-                vagas disponíveis agora
+                cargos disponíveis agora
               </span>
             </span>
           </div>

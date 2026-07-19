@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { Vaga } from "../data/vagas";
 import { normalizar, formatarData } from "../lib/vaga-utils";
+import { ShareVagaButton } from "./ShareVagaButton";
 
 type VagaCardProps = {
   vaga: Vaga;
@@ -39,6 +40,12 @@ export function VagaCard({ vaga }: VagaCardProps) {
   const ensinoMedio = normalizar(vaga.escolaridade).includes("ensino medio");
 
   const quantidadeVagas = vaga.quantidadeVagas ?? 1;
+
+  const fonteLabel = ehVagaSine
+    ? "Prefeitura de Manaus - Sine Manaus"
+    : ehVagaSetemp
+      ? "SETEMP / Portal do Trabalhador"
+      : vaga.empresa;
 
   return (
     <article className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-blue-200 md:hover:-translate-y-1 md:hover:shadow-lg">
@@ -101,11 +108,7 @@ export function VagaCard({ vaga }: VagaCardProps) {
         </div>
 
         <p className="mt-1 text-sm font-medium text-slate-500">
-          {ehVagaSine
-            ? "Prefeitura de Manaus - Sine Manaus"
-            : ehVagaSetemp
-              ? "SETEMP / Portal do Trabalhador"
-              : vaga.empresa}
+          {fonteLabel}
         </p>
       </button>
 
@@ -176,12 +179,16 @@ export function VagaCard({ vaga }: VagaCardProps) {
             )}
           </div>
 
-          <Link
-            href={`/vagas/${vaga.slug}`}
-            className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800"
-          >
-            Ver detalhes da vaga
-          </Link>
+          <div className="mt-5 flex items-center gap-2">
+            <Link
+              href={`/vagas/${vaga.slug}`}
+              className="inline-flex flex-1 items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800"
+            >
+              Ver detalhes da vaga
+            </Link>
+
+            <ShareVagaButton vaga={vaga} fonteLabel={fonteLabel} />
+          </div>
         </div>
       </div>
     </article>
